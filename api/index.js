@@ -1,4 +1,10 @@
-export default function handler(req, res) {
+import OpenAI from "openai";
+
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
+
+export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Methods",
@@ -17,7 +23,7 @@ export default function handler(req, res) {
     return res.status(200).json({
       ok: true,
       success: true,
-      service: "Venturo Recommendation API",
+      service: "Venturo AI Business Builder",
       status: "running"
     });
   }
@@ -30,94 +36,115 @@ export default function handler(req, res) {
     });
   }
 
-  const body = req.body || {};
+  try {
+    const body = req.body || {};
 
-  const idea = String(
-    body.idea ||
-    body.query ||
-    body.prompt ||
-    body.businessIdea ||
-    ""
-  ).trim();
+    const idea = String(
+      body.idea ||
+      body.query ||
+      body.prompt ||
+      body.businessIdea ||
+      ""
+    ).trim();
 
-  const budget = String(
-    body.budget ||
-    body.maxBudget ||
-    "Any budget"
-  ).trim();
+    const budget = String(
+      body.budget ||
+      body.maxBudget ||
+      "Any budget"
+    ).trim();
 
-  const recommendations = [
-    {
-      title: "AI Content Service",
-      description:
-        "Create social media posts, product descriptions and marketing content for small businesses.",
-      budget: "£0–£100",
-      difficulty: "Easy",
-      potential: "High"
-    },
-    {
-      title: "Digital Products",
-      description:
-        "Create and sell ebooks, templates, guides and downloadable resources online.",
-      budget: "£0–£100",
-      difficulty: "Easy",
-      potential: "High"
-    },
-    {
-      title: "Local Business Marketing",
-      description:
-        "Help local businesses improve their online presence and reach more customers.",
-      budget: "£50–£200",
-      difficulty: "Medium",
-      potential: "High"
-    },
-    {
-      title: "Print-on-Demand Store",
-      description:
-        "Create designs for shirts, hoodies, mugs and other products without holding inventory.",
-      budget: "£0–£150",
-      difficulty: "Medium",
-      potential: "Medium"
-    },
-    {
-      title: "Online Consulting Service",
-      description:
-        "Turn a useful skill into a simple online consulting service.",
-      budget: "£0–£100",
-      difficulty: "Medium",
-      potential: "High"
-    },
-    {
-      title: "Affiliate Marketing",
-      description:
-        "Create useful content and earn commissions from qualifying referrals.",
-      budget: "£0–£100",
-      difficulty: "Medium",
-      potential: "Medium"
-    },
-    {
-      title: "Online Course",
-      description:
-        "Package useful knowledge into a beginner-friendly online course.",
-      budget: "£0–£200",
-      difficulty: "Medium",
-      potential: "High"
-    },
-    {
-      title: "Freelance Services",
-      description:
-        "Offer writing, design, research or administration services online.",
-      budget: "£0–£100",
-      difficulty: "Easy",
-      potential: "High"
+    if (!idea) {
+      return res.status(400).json({
+        ok: false,
+        success: false,
+        error: "Please enter a business idea."
+      });
     }
-  ];
 
-  return res.status(200).json({
-    ok: true,
-    success: true,
-    idea,
-    budget,
-    recommendations
-  });
+    const prompt = `
+You are Venturo, a professional global AI business builder.
+
+Analyze this business idea:
+
+Business idea: ${idea}
+Budget: ${budget}
+
+Create 8 practical business opportunities related specifically
+to the user's idea.
+
+Return ONLY valid JSON in exactly this format:
+
+{
+  "recommendations": [
+    {
+      "title": "string",
+      "description": "string",
+      "budget": "string",
+      "difficulty": "Easy",
+      "potential": "High"
+    }
+  ]
+}
+
+Rules:
+- Return exactly 8 recommendations.
+- Make every recommendation relevant to the user's actual idea.
+- Respect the user's budget.
+- Use realistic startup budgets.
+- Difficulty must be Easy, Medium, or Hard.
+- Potential must be Low, Medium, or High.
+- Do not promise guaranteed profits.
+- Keep descriptions concise.
+- Use English.
+`;
+
+    const response = await client.responses.create({
+      model: "gpt-5.6-luna",
+      input: prompt
+    });
+
+    const text = response.output_text || "";
+
+    let aiResult;
+
+    try {
+      aiResult = JSON.parse(text);
+    } catch (error) {
+      console.error("Invalid AI JSON:", text);
+
+      return res.status(500).json({
+        ok: false,
+        success: false,
+        error: "AI returned an invalid response."
+      });
+    }
+
+    if (
+      !aiResult.recommendations ||
+      !Array.isArray(aiResult.recommendations)
+    ) {
+      return res.status(500).json({
+        ok: false,
+        success: false,
+        error: "Invalid AI recommendation response."
+      });
+    }
+
+    return res.status(200).json({
+      ok: true,
+      success: true,
+      idea,
+      budget,
+      recommendations: aiResult.recommendations
+    });
+
+  } catch (error) {
+    console.error("Venturo AI error:", error);
+
+    return res.status(500).json({
+      ok: false,
+      success: false,
+      error: "Venturo AI service error."
+    });
+  }
 }
