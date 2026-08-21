@@ -5,6 +5,7 @@ const client = new OpenAI({
 });
 
 export default async function handler(req, res) {
+  // CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Methods",
@@ -15,10 +16,12 @@ export default async function handler(req, res) {
     "Content-Type"
   );
 
+  // CORS preflight
   if (req.method === "OPTIONS") {
     return res.status(204).end();
   }
 
+  // Health check
   if (req.method === "GET") {
     return res.status(200).json({
       ok: true,
@@ -28,6 +31,7 @@ export default async function handler(req, res) {
     });
   }
 
+  // Only POST
   if (req.method !== "POST") {
     return res.status(405).json({
       ok: false,
@@ -64,22 +68,24 @@ export default async function handler(req, res) {
     const prompt = `
 You are Venturo, a professional global AI business builder.
 
-Analyze this business idea:
+Analyze the following business idea and create practical business opportunities specifically related to it.
 
-Business idea: ${idea}
-Budget: ${budget}
+Business idea:
+${idea}
 
-Create 8 practical business opportunities related specifically
-to the user's idea.
+Available budget:
+${budget}
 
-Return ONLY valid JSON in exactly this format:
+Return ONLY valid JSON.
+
+Use exactly this structure:
 
 {
   "recommendations": [
     {
-      "title": "string",
-      "description": "string",
-      "budget": "string",
+      "title": "Business idea title",
+      "description": "Short practical description",
+      "budget": "Estimated startup budget",
       "difficulty": "Easy",
       "potential": "High"
     }
@@ -87,30 +93,46 @@ Return ONLY valid JSON in exactly this format:
 }
 
 Rules:
-- Return exactly 8 recommendations.
-- Make every recommendation relevant to the user's actual idea.
-- Respect the user's budget.
-- Use realistic startup budgets.
-- Difficulty must be Easy, Medium, or Hard.
-- Potential must be Low, Medium, or High.
-- Do not promise guaranteed profits.
-- Keep descriptions concise.
-- Use English.
+
+1. Return exactly 8 recommendations.
+2. Every recommendation must be related to the user's actual business idea.
+3. Do not return generic unrelated businesses.
+4. Respect the user's budget.
+5. Difficulty must be exactly:
+   Easy
+   Medium
+   Hard
+6. Potential must be exactly:
+   Low
+   Medium
+   High
+7. Do not promise guaranteed profits.
+8. Use realistic business ideas.
+9. Keep descriptions concise.
+10. Use English.
 `;
 
     const response = await client.responses.create({
-      model: "gpt-5.6-luna",
+      model: "gpt-5-mini",
       input: prompt
     });
 
     const text = response.output_text || "";
 
+    if (!text) {
+      return res.status(500).json({
+        ok: false,
+        success: false,
+        error: "Empty response from AI."
+      });
+    }
+
     let aiResult;
 
     try {
       aiResult = JSON.parse(text);
-    } catch (error) {
-      console.error("Invalid AI JSON:", text);
+    } catch (parseError) {
+      console.error("AI JSON parsing error:", text);
 
       return res.status(500).json({
         ok: false,
@@ -120,21 +142,21 @@ Rules:
     }
 
     if (
-      !aiResult.recommendations ||
+      !aiResult ||
       !Array.isArray(aiResult.recommendations)
     ) {
       return res.status(500).json({
         ok: false,
         success: false,
-        error: "Invalid AI recommendation response."
+        error: "Invalid recommendation response."
       });
     }
 
     return res.status(200).json({
       ok: true,
       success: true,
-      idea,
-      budget,
+      idea: idea,
+      budget: budget,
       recommendations: aiResult.recommendations
     });
 
