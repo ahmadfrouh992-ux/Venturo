@@ -1,58 +1,41 @@
-export default async function handler(request) {
-  const corsHeaders = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Content-Type": "application/json"
-  };
-
+export default function handler(req, res) {
   // CORS
-  if (request.method === "OPTIONS") {
-    return new Response(null, {
-      status: 204,
-      headers: corsHeaders
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type"
+  );
+
+  // Browser preflight
+  if (req.method === "OPTIONS") {
+    return res.status(204).end();
+  }
+
+  // API health check
+  if (req.method === "GET") {
+    return res.status(200).json({
+      ok: true,
+      success: true,
+      service: "Venturo Recommendation API",
+      status: "running"
     });
   }
 
-  // GET health check
-  if (request.method === "GET") {
-    return new Response(
-      JSON.stringify({
-        ok: true,
-        success: true,
-        service: "Venturo Recommendation API",
-        status: "running"
-      }),
-      {
-        status: 200,
-        headers: corsHeaders
-      }
-    );
-  }
-
-  // Only POST
-  if (request.method !== "POST") {
-    return new Response(
-      JSON.stringify({
-        ok: false,
-        success: false,
-        error: "Method not allowed"
-      }),
-      {
-        status: 405,
-        headers: corsHeaders
-      }
-    );
+  // Recommendations use POST
+  if (req.method !== "POST") {
+    return res.status(405).json({
+      ok: false,
+      success: false,
+      error: "Method not allowed"
+    });
   }
 
   try {
-    let body = {};
-
-    try {
-      body = await request.json();
-    } catch {
-      body = {};
-    }
+    const body = req.body || {};
 
     const idea = String(
       body.idea ||
@@ -104,7 +87,7 @@ export default async function handler(request) {
       {
         title: "Online Consulting Service",
         description:
-          "Turn a useful skill or area of knowledge into a simple online consulting service.",
+          "Turn a useful skill into a simple online consulting service.",
         budget: "£0–£100",
         difficulty: "Medium",
         potential: "High"
@@ -112,7 +95,7 @@ export default async function handler(request) {
       {
         title: "Affiliate Marketing",
         description:
-          "Build useful content around products and earn commissions from qualified sales.",
+          "Build useful content around products and earn commissions from qualifying referrals.",
         budget: "£0–£100",
         difficulty: "Medium",
         potential: "Medium"
@@ -137,7 +120,7 @@ export default async function handler(request) {
 
     let results = recommendations;
 
-    // Match results to the user's idea
+    // Simple matching
     if (idea) {
       const keywords = idea
         .toLowerCase()
@@ -150,20 +133,16 @@ export default async function handler(request) {
           " " +
           item.description +
           " " +
-          item.budget +
-          " " +
-          item.difficulty +
-          " " +
-          item.potential
+          item.budget
         ).toLowerCase();
 
         let score = 0;
 
-        for (const keyword of keywords) {
+        keywords.forEach(keyword => {
           if (text.includes(keyword)) {
             score++;
           }
-        }
+        });
 
         return {
           ...item,
@@ -176,33 +155,21 @@ export default async function handler(request) {
       results = scored.map(({ score, ...item }) => item);
     }
 
-    return new Response(
-      JSON.stringify({
-        ok: true,
-        success: true,
-        idea,
-        budget,
-        recommendations: results
-      }),
-      {
-        status: 200,
-        headers: corsHeaders
-      }
-    );
+    return res.status(200).json({
+      ok: true,
+      success: true,
+      idea: idea,
+      budget: budget,
+      recommendations: results
+    });
 
   } catch (error) {
     console.error("Venturo API error:", error);
 
-    return new Response(
-      JSON.stringify({
-        ok: false,
-        success: false,
-        error: "Recommendation service error."
-      }),
-      {
-        status: 500,
-        headers: corsHeaders
-      }
-    );
+    return res.status(500).json({
+      ok: false,
+      success: false,
+      error: "Recommendation service error."
+    });
   }
 }
