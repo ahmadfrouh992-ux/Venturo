@@ -1,53 +1,67 @@
-export default function handler(req, res) {
-  // CORS
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, OPTIONS"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type"
-  );
+export default async function handler(request) {
+  const corsHeaders = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Content-Type": "application/json",
+  };
 
-  // Browser preflight
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
-
-  // Health check
-  if (req.method === "GET") {
-    return res.status(200).json({
-      ok: true,
-      service: "Venturo Recommendation API",
-      status: "running"
+  if (request.method === "OPTIONS") {
+    return new Response(null, {
+      status: 204,
+      headers: corsHeaders,
     });
   }
 
-  // Recommendations require POST
-  if (req.method !== "POST") {
-    return res.status(405).json({
-      ok: false,
-      error: "Method not allowed"
-    });
+  if (request.method === "GET") {
+    return new Response(
+      JSON.stringify({
+        ok: true,
+        service: "Venturo Recommendation API",
+        status: "running",
+      }),
+      {
+        status: 200,
+        headers: corsHeaders,
+      }
+    );
+  }
+
+  if (request.method !== "POST") {
+    return new Response(
+      JSON.stringify({
+        ok: false,
+        error: "Method not allowed",
+      }),
+      {
+        status: 405,
+        headers: corsHeaders,
+      }
+    );
   }
 
   try {
-    const body = req.body || {};
+    let body = {};
+
+    try {
+      body = await request.json();
+    } catch {
+      body = {};
+    }
 
     const idea = String(
       body.idea ||
-      body.query ||
-      body.prompt ||
-      body.businessIdea ||
-      ""
+        body.query ||
+        body.prompt ||
+        body.businessIdea ||
+        ""
     ).trim();
 
     const budget = String(
       body.budget ||
-      body.maxBudget ||
-      "Any budget"
-    );
+        body.maxBudget ||
+        "Any budget"
+    ).trim();
 
     const recommendations = [
       {
@@ -56,53 +70,68 @@ export default function handler(req, res) {
           "Create social media posts, product descriptions and marketing content for small businesses using AI tools.",
         budget: "£0–£100",
         difficulty: "Easy",
-        potential: "High"
+        potential: "High",
       },
       {
         title: "Digital Products",
         description:
-          "Create and sell ebooks, templates, planners, guides and other downloadable products online.",
+          "Create and sell ebooks, templates, guides, checklists and other downloadable digital products.",
         budget: "£0–£100",
         difficulty: "Easy",
-        potential: "High"
+        potential: "High",
       },
       {
         title: "Local Business Marketing",
         description:
-          "Help local businesses improve their social media, online presence and customer reach.",
+          "Help local businesses improve their online presence, social media content and customer communication.",
         budget: "£50–£200",
         difficulty: "Medium",
-        potential: "High"
+        potential: "High",
       },
       {
         title: "Print-on-Demand Store",
         description:
-          "Create designs for shirts, mugs, stickers and other products without keeping physical inventory.",
-        budget: "£50–£200",
-        difficulty: "Easy",
-        potential: "Medium"
+          "Create designs for shirts, hoodies, mugs and other products without keeping physical inventory.",
+        budget: "£0–£150",
+        difficulty: "Medium",
+        potential: "Medium",
       },
       {
         title: "Online Consulting Service",
         description:
-          "Turn a useful skill into a simple online service and sell it directly to customers.",
+          "Turn a useful skill or area of knowledge into a simple online consulting service.",
         budget: "£0–£100",
         difficulty: "Medium",
-        potential: "High"
+        potential: "High",
       },
       {
         title: "Affiliate Marketing",
         description:
-          "Build useful content around a specific niche and earn commissions by recommending relevant products and services.",
+          "Build useful content around products or services and earn commissions from qualifying referrals.",
         budget: "£0–£100",
         difficulty: "Medium",
-        potential: "Medium"
-      }
+        potential: "Medium",
+      },
+      {
+        title: "Online Course",
+        description:
+          "Package useful knowledge into a beginner-friendly online course and sell access digitally.",
+        budget: "£0–£200",
+        difficulty: "Medium",
+        potential: "High",
+      },
+      {
+        title: "Freelance Services",
+        description:
+          "Offer writing, design, research, administration or other digital services to clients online.",
+        budget: "£0–£100",
+        difficulty: "Easy",
+        potential: "High",
+      },
     ];
 
     let results = recommendations;
 
-    // Match recommendations to the user's idea
     if (idea.length > 0) {
       const keywords = idea
         .toLowerCase()
@@ -115,7 +144,11 @@ export default function handler(req, res) {
           " " +
           item.description +
           " " +
-          item.budget
+          item.budget +
+          " " +
+          item.difficulty +
+          " " +
+          item.potential
         ).toLowerCase();
 
         let score = 0;
@@ -128,7 +161,7 @@ export default function handler(req, res) {
 
         return {
           ...item,
-          score
+          score,
         };
       });
 
@@ -137,20 +170,32 @@ export default function handler(req, res) {
       results = scored.map(({ score, ...item }) => item);
     }
 
-    return res.status(200).json({
-      ok: true,
-      success: true,
-      idea: idea,
-      budget: budget,
-      recommendations: results
-    });
+    return new Response(
+      JSON.stringify({
+        ok: true,
+        success: true,
+        idea,
+        budget,
+        recommendations: results,
+      }),
+      {
+        status: 200,
+        headers: corsHeaders,
+      }
+    );
   } catch (error) {
     console.error("Venturo API error:", error);
 
-    return res.status(500).json({
-      ok: false,
-      success: false,
-      error: "Recommendation service error."
-    });
+    return new Response(
+      JSON.stringify({
+        ok: false,
+        success: false,
+        error: "Recommendation service error.",
+      }),
+      {
+        status: 500,
+        headers: corsHeaders,
+      }
+    );
   }
 }
