@@ -1,0 +1,12 @@
+{
+  "name": "venturo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Global AI Business Builder — ideas, recommendations, and tools to build businesses.",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
