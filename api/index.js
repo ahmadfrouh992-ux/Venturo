@@ -1,118 +1,125 @@
-export default async function handler(req, res) {
-  // Health check
-  if (req.method === "GET") {
-    return res.status(200).json({
-      ok: true,
-      service: "Venturo API",
-      message: "Venturo API is running"
-    });
+export default function handler(req, res) {
+  // Allow the browser to call this API
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  // Handle browser preflight request
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
   }
 
+  // Only POST is needed for recommendations
   if (req.method !== "POST") {
-    return res.status(405).json({
-      ok: false,
-      error: "Method not allowed"
+    return res.status(200).json({
+      ok: true,
+      service: "Venturo Recommendation API",
+      message: "Recommendation service is running."
     });
   }
 
   try {
-    const { idea, goal, budget, country } = req.body || {};
+    const body = req.body || {};
 
-    if (!idea) {
-      return res.status(400).json({
-        ok: false,
-        error: "Business idea is required"
-      });
-    }
+    const idea =
+      body.idea ||
+      body.query ||
+      body.prompt ||
+      body.businessIdea ||
+      "";
 
-    if (!process.env.OPENAI_API_KEY) {
-      return res.status(500).json({
-        ok: false,
-        error: "OPENAI_API_KEY is not configured"
-      });
-    }
+    const budget =
+      body.budget ||
+      body.maxBudget ||
+      "Any budget";
 
-    const prompt = `
-You are Venturo, a global AI business builder.
+    const text = String(idea).toLowerCase();
 
-Analyze this business idea and provide practical recommendations.
-
-Business idea: ${idea}
-Goal: ${goal || "Build and grow a profitable business"}
-Budget: ${budget || "Not specified"}
-Country: ${country || "Not specified"}
-
-Return a clear JSON object with:
-{
-  "business_summary": "",
-  "target_customer": "",
-  "market_opportunity": "",
-  "business_model": "",
-  "recommended_products": [],
-  "marketing_strategy": [],
-  "first_steps": [],
-  "risks": [],
-  "score": 0
-}
-
-The score must be between 0 and 100.
-`;
-
-    const response = await fetch(
-      "https://api.openai.com/v1/chat/completions",
+    const recommendations = [
       {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
-        },
-        body: JSON.stringify({
-          model: "gpt-4o-mini",
-          messages: [
-            {
-              role: "system",
-              content: "You are Venturo, an expert AI business builder."
-            },
-            {
-              role: "user",
-              content: prompt
-            }
-          ],
-          temperature: 0.7
-        })
+        title: "AI Content Service",
+        description:
+          "Create social media posts, product descriptions and simple marketing content for small businesses using AI tools.",
+        budget: "£0–£100",
+        difficulty: "Easy",
+        potential: "High"
+      },
+      {
+        title: "Digital Products",
+        description:
+          "Create and sell ebooks, templates, planners, guides or downloadable business resources online.",
+        budget: "£0–£100",
+        difficulty: "Easy",
+        potential: "High"
+      },
+      {
+        title: "Local Business Marketing",
+        description:
+          "Help local businesses improve their Google presence, social media content and online visibility.",
+        budget: "£50–£200",
+        difficulty: "Medium",
+        potential: "High"
+      },
+      {
+        title: "Print-on-Demand Store",
+        description:
+          "Create designs for shirts, mugs, stickers and other products without holding physical inventory.",
+        budget: "£50–£200",
+        difficulty: "Easy",
+        potential: "Medium"
+      },
+      {
+        title: "Online Consulting Service",
+        description:
+          "Package a useful skill into a simple online service and sell it directly to customers.",
+        budget: "£0–£100",
+        difficulty: "Medium",
+        potential: "High"
       }
-    );
+    ];
 
-    const data = await response.json();
+    // Simple relevance filtering
+    let results = recommendations;
 
-    if (!response.ok) {
-      return res.status(response.status).json({
-        ok: false,
-        error: data?.error?.message || "AI request failed"
+    if (text) {
+      const keywords = text
+        .split(/\s+/)
+        .filter(word => word.length > 2);
+
+      const scored = recommendations.map(item => {
+        const combined =
+          `${item.title} ${item.description}`.toLowerCase();
+
+        let score = 0;
+
+        for (const keyword of keywords) {
+          if (combined.includes(keyword)) {
+            score++;
+          }
+        }
+
+        return { ...item, score };
       });
-    }
 
-    const content = data?.choices?.[0]?.message?.content || "";
+      scored.sort((a, b) => b.score - a.score);
 
-    let result;
-
-    try {
-      result = JSON.parse(content);
-    } catch {
-      result = {
-        business_summary: content
-      };
+      results = scored.map(({ score, ...item }) => item);
     }
 
     return res.status(200).json({
       ok: true,
-      result
+      success: true,
+      idea,
+      budget,
+      recommendations: results
     });
-
   } catch (error) {
+    console.error("Venturo API error:", error);
+
     return res.status(500).json({
       ok: false,
-      error: error.message || "Internal server error"
+      success: false,
+      error: "Recommendation service error."
     });
   }
 }
