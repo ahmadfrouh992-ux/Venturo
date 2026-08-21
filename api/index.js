@@ -1,45 +1,59 @@
 export default function handler(req, res) {
-  // Allow the browser to call this API
+  // CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type"
+  );
 
-  // Handle browser preflight request
+  // Browser preflight
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
 
-  // Only POST is needed for recommendations
-  if (req.method !== "POST") {
+  // Health check
+  if (req.method === "GET") {
     return res.status(200).json({
       ok: true,
       service: "Venturo Recommendation API",
-      message: "Recommendation service is running."
+      status: "running"
+    });
+  }
+
+  // Recommendations require POST
+  if (req.method !== "POST") {
+    return res.status(405).json({
+      ok: false,
+      error: "Method not allowed"
     });
   }
 
   try {
     const body = req.body || {};
 
-    const idea =
+    const idea = String(
       body.idea ||
       body.query ||
       body.prompt ||
       body.businessIdea ||
-      "";
+      ""
+    ).trim();
 
-    const budget =
+    const budget = String(
       body.budget ||
       body.maxBudget ||
-      "Any budget";
-
-    const text = String(idea).toLowerCase();
+      "Any budget"
+    );
 
     const recommendations = [
       {
         title: "AI Content Service",
         description:
-          "Create social media posts, product descriptions and simple marketing content for small businesses using AI tools.",
+          "Create social media posts, product descriptions and marketing content for small businesses using AI tools.",
         budget: "£0–£100",
         difficulty: "Easy",
         potential: "High"
@@ -47,7 +61,7 @@ export default function handler(req, res) {
       {
         title: "Digital Products",
         description:
-          "Create and sell ebooks, templates, planners, guides or downloadable business resources online.",
+          "Create and sell ebooks, templates, planners, guides and other downloadable products online.",
         budget: "£0–£100",
         difficulty: "Easy",
         potential: "High"
@@ -55,7 +69,7 @@ export default function handler(req, res) {
       {
         title: "Local Business Marketing",
         description:
-          "Help local businesses improve their Google presence, social media content and online visibility.",
+          "Help local businesses improve their social media, online presence and customer reach.",
         budget: "£50–£200",
         difficulty: "Medium",
         potential: "High"
@@ -63,7 +77,7 @@ export default function handler(req, res) {
       {
         title: "Print-on-Demand Store",
         description:
-          "Create designs for shirts, mugs, stickers and other products without holding physical inventory.",
+          "Create designs for shirts, mugs, stickers and other products without keeping physical inventory.",
         budget: "£50–£200",
         difficulty: "Easy",
         potential: "Medium"
@@ -71,34 +85,51 @@ export default function handler(req, res) {
       {
         title: "Online Consulting Service",
         description:
-          "Package a useful skill into a simple online service and sell it directly to customers.",
+          "Turn a useful skill into a simple online service and sell it directly to customers.",
         budget: "£0–£100",
         difficulty: "Medium",
         potential: "High"
+      },
+      {
+        title: "Affiliate Marketing",
+        description:
+          "Build useful content around a specific niche and earn commissions by recommending relevant products and services.",
+        budget: "£0–£100",
+        difficulty: "Medium",
+        potential: "Medium"
       }
     ];
 
-    // Simple relevance filtering
     let results = recommendations;
 
-    if (text) {
-      const keywords = text
+    // Match recommendations to the user's idea
+    if (idea.length > 0) {
+      const keywords = idea
+        .toLowerCase()
         .split(/\s+/)
-        .filter(word => word.length > 2);
+        .filter((word) => word.length > 2);
 
-      const scored = recommendations.map(item => {
-        const combined =
-          `${item.title} ${item.description}`.toLowerCase();
+      const scored = recommendations.map((item) => {
+        const text = (
+          item.title +
+          " " +
+          item.description +
+          " " +
+          item.budget
+        ).toLowerCase();
 
         let score = 0;
 
-        for (const keyword of keywords) {
-          if (combined.includes(keyword)) {
-            score++;
+        keywords.forEach((keyword) => {
+          if (text.includes(keyword)) {
+            score += 1;
           }
-        }
+        });
 
-        return { ...item, score };
+        return {
+          ...item,
+          score
+        };
       });
 
       scored.sort((a, b) => b.score - a.score);
@@ -109,8 +140,8 @@ export default function handler(req, res) {
     return res.status(200).json({
       ok: true,
       success: true,
-      idea,
-      budget,
+      idea: idea,
+      budget: budget,
       recommendations: results
     });
   } catch (error) {
