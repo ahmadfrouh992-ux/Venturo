@@ -5,6 +5,7 @@ const client = new OpenAI({
 });
 
 export default async function handler(req, res) {
+
   // CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -16,12 +17,12 @@ export default async function handler(req, res) {
     "Content-Type"
   );
 
-  // CORS preflight
+  // OPTIONS
   if (req.method === "OPTIONS") {
     return res.status(204).end();
   }
 
-  // Health check
+  // GET - health check
   if (req.method === "GET") {
     return res.status(200).json({
       ok: true,
@@ -31,7 +32,7 @@ export default async function handler(req, res) {
     });
   }
 
-  // Only POST
+  // POST only
   if (req.method !== "POST") {
     return res.status(405).json({
       ok: false,
@@ -41,7 +42,12 @@ export default async function handler(req, res) {
   }
 
   try {
+
     const body = req.body || {};
+
+    const action = String(
+      body.action || "recommend"
+    ).trim();
 
     const idea = String(
       body.idea ||
@@ -65,20 +71,135 @@ export default async function handler(req, res) {
       });
     }
 
+    // =====================================================
+    // BUILD MY BUSINESS
+    // =====================================================
+
+    if (action === "build") {
+
+      const prompt = `
+You are Venturo, a professional global AI business builder.
+
+The user wants to build a real business.
+
+BUSINESS IDEA:
+${idea}
+
+AVAILABLE BUDGET:
+${budget}
+
+Create a practical business blueprint.
+
+Return ONLY valid JSON using exactly this structure:
+
+{
+  "summary": "short business summary",
+  "score": 8,
+  "targetCustomer": "ideal target customers",
+  "startupCost": "realistic estimated startup cost",
+  "revenueModel": "how the business makes money",
+  "competition": "competition assessment",
+  "growthPotential": "growth assessment",
+  "bestBusinessModel": "best business model for this idea",
+  "firstSteps": [
+    "Step 1",
+    "Step 2",
+    "Step 3",
+    "Step 4",
+    "Step 5",
+    "Step 6",
+    "Step 7"
+  ],
+  "risks": [
+    "Risk 1",
+    "Risk 2",
+    "Risk 3",
+    "Risk 4"
+  ],
+  "nextAction": "the single most important action the user should take next"
+}
+
+RULES:
+
+- score must be a number from 1 to 10.
+- Give exactly 7 first steps.
+- Give exactly 4 risks.
+- Make everything specific to the user's business idea.
+- Respect the user's budget.
+- Be realistic.
+- Do not promise guaranteed profits.
+- Do not invent statistics.
+- Keep the language clear and practical.
+- Use English.
+`;
+
+      const response =
+        await client.responses.create({
+          model: "gpt-5-mini",
+          input: prompt
+        });
+
+      const text =
+        response.output_text || "";
+
+      if (!text) {
+        return res.status(500).json({
+          ok: false,
+          success: false,
+          error: "Empty AI response."
+        });
+      }
+
+      let analysis;
+
+      try {
+
+        analysis =
+          JSON.parse(text);
+
+      } catch (error) {
+
+        console.error(
+          "Build JSON error:",
+          text
+        );
+
+        return res.status(500).json({
+          ok: false,
+          success: false,
+          error: "AI returned invalid business analysis."
+        });
+
+      }
+
+      return res.status(200).json({
+        ok: true,
+        success: true,
+        action: "build",
+        idea,
+        budget,
+        analysis
+      });
+    }
+
+    // =====================================================
+    // FIND IDEAS
+    // =====================================================
+
     const prompt = `
 You are Venturo, a professional global AI business builder.
 
-Analyze the following business idea and create practical business opportunities specifically related to it.
+Analyze the user's business idea.
 
-Business idea:
+BUSINESS IDEA:
 ${idea}
 
-Available budget:
+AVAILABLE BUDGET:
 ${budget}
 
-Return ONLY valid JSON.
+Create exactly 8 practical business opportunities related specifically to the user's idea.
 
-Use exactly this structure:
+Return ONLY valid JSON using exactly this structure:
 
 {
   "recommendations": [
@@ -92,81 +213,98 @@ Use exactly this structure:
   ]
 }
 
-Rules:
+RULES:
 
-1. Return exactly 8 recommendations.
-2. Every recommendation must be related to the user's actual business idea.
-3. Do not return generic unrelated businesses.
-4. Respect the user's budget.
-5. Difficulty must be exactly:
-   Easy
-   Medium
-   Hard
-6. Potential must be exactly:
-   Low
-   Medium
-   High
-7. Do not promise guaranteed profits.
-8. Use realistic business ideas.
-9. Keep descriptions concise.
-10. Use English.
+- Return exactly 8 recommendations.
+- Every recommendation must be related to the user's actual idea.
+- Do not return unrelated generic businesses.
+- Respect the user's budget.
+- Difficulty must be Easy, Medium, or Hard.
+- Potential must be Low, Medium, or High.
+- Do not promise guaranteed profits.
+- Use realistic business ideas.
+- Keep descriptions concise.
+- Use English.
 `;
 
-    const response = await client.responses.create({
-      model: "gpt-5-mini",
-      input: prompt
-    });
+    const response =
+      await client.responses.create({
+        model: "gpt-5-mini",
+        input: prompt
+      });
 
-    const text = response.output_text || "";
+    const text =
+      response.output_text || "";
 
     if (!text) {
       return res.status(500).json({
         ok: false,
         success: false,
-        error: "Empty response from AI."
+        error: "Empty AI response."
       });
     }
 
     let aiResult;
 
     try {
-      aiResult = JSON.parse(text);
-    } catch (parseError) {
-      console.error("AI JSON parsing error:", text);
+
+      aiResult =
+        JSON.parse(text);
+
+    } catch (error) {
+
+      console.error(
+        "Recommendation JSON error:",
+        text
+      );
 
       return res.status(500).json({
         ok: false,
         success: false,
-        error: "AI returned an invalid response."
+        error: "AI returned invalid recommendations."
       });
+
     }
 
     if (
       !aiResult ||
-      !Array.isArray(aiResult.recommendations)
+      !Array.isArray(
+        aiResult.recommendations
+      )
     ) {
+
       return res.status(500).json({
         ok: false,
         success: false,
         error: "Invalid recommendation response."
       });
+
     }
 
     return res.status(200).json({
       ok: true,
       success: true,
-      idea: idea,
-      budget: budget,
-      recommendations: aiResult.recommendations
+      action: "recommend",
+      idea,
+      budget,
+      recommendations:
+        aiResult.recommendations
     });
 
   } catch (error) {
-    console.error("Venturo AI error:", error);
+
+    console.error(
+      "Venturo AI error:",
+      error
+    );
 
     return res.status(500).json({
       ok: false,
       success: false,
-      error: "Venturo AI service error."
+      error:
+        error?.message ||
+        "Venturo AI service error."
     });
+
   }
 }
