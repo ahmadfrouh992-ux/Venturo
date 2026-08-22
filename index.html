@@ -181,6 +181,102 @@
       font-weight: 600;
     }
 
+    .build-section {
+      display: none;
+      margin-top: 35px;
+      text-align: center;
+    }
+
+    .build-button {
+      width: 100%;
+      max-width: 420px;
+      height: 62px;
+      font-size: 18px;
+      background: #111827;
+    }
+
+    .build-button:hover {
+      background: #1f2937;
+    }
+
+    .analysis {
+      display: none;
+      margin-top: 45px;
+      background: white;
+      border-radius: 24px;
+      padding: 30px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+    }
+
+    .analysis h2 {
+      margin-top: 0;
+      font-size: 34px;
+    }
+
+    .analysis-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      margin-top: 25px;
+    }
+
+    .analysis-box {
+      background: #f8fafc;
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .analysis-box strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .analysis-box div {
+      font-size: 17px;
+      line-height: 1.5;
+    }
+
+    .score {
+      font-size: 48px !important;
+      font-weight: 800;
+      color: #2563eb;
+    }
+
+    .steps {
+      margin-top: 25px;
+    }
+
+    .steps ol {
+      padding-left: 25px;
+      line-height: 1.8;
+    }
+
+    .risks {
+      margin-top: 25px;
+    }
+
+    .risks ul {
+      padding-left: 25px;
+      line-height: 1.8;
+    }
+
+    .next-action {
+      margin-top: 30px;
+      padding: 22px;
+      background: #eef2ff;
+      border-radius: 16px;
+    }
+
+    .next-action strong {
+      display: block;
+      margin-bottom: 8px;
+    }
+
     .empty {
       color: #64748b;
       font-size: 18px;
@@ -224,6 +320,10 @@
         grid-template-columns: 1fr;
       }
 
+      .analysis-grid {
+        grid-template-columns: 1fr;
+      }
+
       nav {
         gap: 12px;
       }
@@ -233,242 +333,531 @@
 
 <body>
 
-  <header>
-    <div class="logo">
-      Venturo<span>.</span>
+<header>
+  <div class="logo">
+    Venturo<span>.</span>
+  </div>
+
+  <nav>
+    <div>Builder</div>
+    <div>Ideas</div>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+
+    <div class="eyebrow">
+      GLOBAL AI BUSINESS BUILDER
     </div>
 
-    <nav>
-      <div>Builder</div>
-      <div>Ideas</div>
-    </nav>
-  </header>
+    <h1>
+      Turn an idea into a business.
+    </h1>
 
-  <section class="hero">
-    <div class="hero-inner">
-
-      <div class="eyebrow">
-        GLOBAL AI BUSINESS BUILDER
-      </div>
-
-      <h1>
-        Turn an idea into a business.
-      </h1>
-
-      <div class="subtitle">
-        Venturo helps entrepreneurs discover practical business
-        opportunities, compare options, and turn a simple idea
-        into an actionable starting plan.
-      </div>
-
-    </div>
-  </section>
-
-  <section class="builder">
-
-    <div class="form-row">
-
-      <input
-        id="idea"
-        type="text"
-        placeholder="What do you want to build? e.g. online business for £100"
-      >
-
-      <select id="budget">
-        <option value="Any budget">Any budget</option>
-        <option value="£0–£100">£0–£100</option>
-        <option value="£100–£500">£100–£500</option>
-        <option value="£500–£1,000">£500–£1,000</option>
-        <option value="£1,000+">£1,000+</option>
-      </select>
-
-      <button id="findButton" onclick="findIdeas()">
-        Find ideas
-      </button>
-
+    <div class="subtitle">
+      Venturo helps entrepreneurs discover practical business
+      opportunities, compare options, and turn a simple idea
+      into an actionable starting plan.
     </div>
 
-    <div id="message" class="message"></div>
+  </div>
+</section>
 
-  </section>
+<section class="builder">
 
-  <section class="section">
+  <div class="form-row">
+
+    <input
+      id="idea"
+      type="text"
+      placeholder="What do you want to build? e.g. online business for £100"
+    >
+
+    <select id="budget">
+      <option value="Any budget">Any budget</option>
+      <option value="£0–£100">£0–£100</option>
+      <option value="£100–£500">£100–£500</option>
+      <option value="£500–£1,000">£500–£1,000</option>
+      <option value="£1,000+">£1,000+</option>
+    </select>
+
+    <button id="findButton" onclick="findIdeas()">
+      Find ideas
+    </button>
+
+  </div>
+
+  <div id="message" class="message"></div>
+
+</section>
+
+<section class="section">
+
+  <h2>
+    Business opportunities
+  </h2>
+
+  <div id="results">
+
+    <div class="empty">
+      Enter an idea above to discover business opportunities.
+    </div>
+
+  </div>
+
+  <div id="buildSection" class="build-section">
+
+    <button
+      id="buildButton"
+      class="build-button"
+      onclick="buildBusiness()"
+    >
+      🚀 Build My Business
+    </button>
+
+  </div>
+
+  <div id="analysis" class="analysis">
 
     <h2>
-      Business opportunities
+      Your Business Blueprint
     </h2>
 
-    <div id="results">
+    <div class="analysis-grid">
 
-      <div class="empty">
-        Enter an idea above to discover business opportunities.
+      <div class="analysis-box">
+        <strong>Idea Score</strong>
+        <div id="score" class="score">—</div>
+      </div>
+
+      <div class="analysis-box">
+        <strong>Target Customers</strong>
+        <div id="targetCustomer">—</div>
+      </div>
+
+      <div class="analysis-box">
+        <strong>Startup Cost</strong>
+        <div id="startupCost">—</div>
+      </div>
+
+      <div class="analysis-box">
+        <strong>Revenue Model</strong>
+        <div id="revenueModel">—</div>
+      </div>
+
+      <div class="analysis-box">
+        <strong>Competition</strong>
+        <div id="competition">—</div>
+      </div>
+
+      <div class="analysis-box">
+        <strong>Growth Potential</strong>
+        <div id="growthPotential">—</div>
+      </div>
+
+      <div class="analysis-box">
+        <strong>Best Business Model</strong>
+        <div id="bestModel">—</div>
+      </div>
+
+      <div class="analysis-box">
+        <strong>Summary</strong>
+        <div id="summary">—</div>
       </div>
 
     </div>
 
-  </section>
+    <div class="steps">
+      <h3>First 7 Steps</h3>
+      <ol id="firstSteps"></ol>
+    </div>
 
-  <footer>
-    © 2026 Venturo — Global AI Business Builder
-  </footer>
+    <div class="risks">
+      <h3>Key Risks</h3>
+      <ul id="risks"></ul>
+    </div>
 
-  <script>
+    <div class="next-action">
+      <strong>Recommended Next Action</strong>
+      <div id="nextAction">—</div>
+    </div>
 
-    async function findIdeas() {
+  </div>
 
-      const ideaInput =
-        document.getElementById("idea");
+</section>
 
-      const budgetInput =
-        document.getElementById("budget");
+<footer>
+  © 2026 Venturo — Global AI Business Builder
+</footer>
 
-      const button =
-        document.getElementById("findButton");
+<script>
 
-      const message =
-        document.getElementById("message");
+let currentIdea = "";
+let currentBudget = "";
 
-      const results =
-        document.getElementById("results");
+async function findIdeas() {
 
-      const idea =
-        ideaInput.value.trim();
+  const ideaInput =
+    document.getElementById("idea");
 
-      const budget =
-        budgetInput.value;
+  const budgetInput =
+    document.getElementById("budget");
 
-      if (!idea) {
-        message.textContent =
-          "Please enter a business idea.";
+  const button =
+    document.getElementById("findButton");
 
-        ideaInput.focus();
+  const message =
+    document.getElementById("message");
 
-        return;
-      }
+  const results =
+    document.getElementById("results");
 
-      button.disabled = true;
-      button.textContent = "Finding...";
+  const buildSection =
+    document.getElementById("buildSection");
 
-      message.textContent =
-        "Finding the best business opportunities...";
+  const analysis =
+    document.getElementById("analysis");
 
-      results.innerHTML = "";
+  const idea =
+    ideaInput.value.trim();
 
-      try {
+  const budget =
+    budgetInput.value;
 
-        const response =
-          await fetch("/api", {
-            method: "POST",
+  if (!idea) {
 
-            headers: {
-              "Content-Type": "application/json"
-            },
+    message.textContent =
+      "Please enter a business idea.";
 
-            body: JSON.stringify({
-              idea: idea,
-              budget: budget
-            })
-          });
+    ideaInput.focus();
 
-        const data =
-          await response.json();
+    return;
+  }
 
-        if (!response.ok || !data.success) {
-          throw new Error(
-            data.error ||
-            "Recommendation service error."
-          );
-        }
+  currentIdea = idea;
+  currentBudget = budget;
 
-        if (
-          !Array.isArray(
-            data.recommendations
-          )
-        ) {
-          throw new Error(
-            "Invalid recommendation response."
-          );
-        }
+  buildSection.style.display = "none";
+  analysis.style.display = "none";
 
-        message.textContent =
-          `Found ${data.recommendations.length} business opportunities.`;
+  button.disabled = true;
+  button.textContent = "Finding...";
 
-        results.innerHTML =
-          data.recommendations
-            .map(item => {
+  message.textContent =
+    "Finding the best business opportunities...";
 
-              return `
-                <div class="card">
+  results.innerHTML = "";
 
-                  <h3>
-                    ${escapeHtml(item.title)}
-                  </h3>
+  try {
 
-                  <p>
-                    ${escapeHtml(item.description)}
-                  </p>
+    const response =
+      await fetch("/api", {
+        method: "POST",
 
-                  <div class="tags">
+        headers: {
+          "Content-Type": "application/json"
+        },
 
-                    <div class="tag">
-                      Budget:
-                      ${escapeHtml(item.budget)}
-                    </div>
+        body: JSON.stringify({
+          idea: idea,
+          budget: budget
+        })
+      });
 
-                    <div class="tag">
-                      Difficulty:
-                      ${escapeHtml(item.difficulty)}
-                    </div>
+    const data =
+      await response.json();
 
-                    <div class="tag">
-                      Potential:
-                      ${escapeHtml(item.potential)}
-                    </div>
+    if (!response.ok || !data.success) {
 
-                  </div>
+      throw new Error(
+        data.error ||
+        "Recommendation service error."
+      );
 
+    }
+
+    if (
+      !Array.isArray(
+        data.recommendations
+      )
+    ) {
+
+      throw new Error(
+        "Invalid recommendation response."
+      );
+
+    }
+
+    message.textContent =
+      `Found ${data.recommendations.length} business opportunities.`;
+
+    results.innerHTML =
+      data.recommendations
+        .map(item => {
+
+          return `
+            <div class="card">
+
+              <h3>
+                ${escapeHtml(item.title)}
+              </h3>
+
+              <p>
+                ${escapeHtml(item.description)}
+              </p>
+
+              <div class="tags">
+
+                <div class="tag">
+                  Budget:
+                  ${escapeHtml(item.budget)}
                 </div>
-              `;
 
-            })
-            .join("");
+                <div class="tag">
+                  Difficulty:
+                  ${escapeHtml(item.difficulty)}
+                </div>
 
-      } catch (error) {
+                <div class="tag">
+                  Potential:
+                  ${escapeHtml(item.potential)}
+                </div>
 
-        console.error(
-          "Venturo API error:",
-          error
-        );
+              </div>
 
-        message.textContent =
-          "Venturo could not reach the recommendation service. Please try again.";
+            </div>
+          `;
 
-        results.innerHTML = `
-          <div class="empty">
-            The recommendation service is temporarily unavailable.
-          </div>
-        `;
+        })
+        .join("");
 
-      } finally {
+    buildSection.style.display = "block";
 
-        button.disabled = false;
-        button.textContent = "Find ideas";
+  } catch (error) {
 
-      }
+    console.error(
+      "Venturo API error:",
+      error
+    );
+
+    message.textContent =
+      "Venturo could not reach the recommendation service. Please try again.";
+
+    results.innerHTML = `
+      <div class="empty">
+        The recommendation service is temporarily unavailable.
+      </div>
+    `;
+
+  } finally {
+
+    button.disabled = false;
+    button.textContent = "Find ideas";
+
+  }
+}
+
+async function buildBusiness() {
+
+  const button =
+    document.getElementById("buildButton");
+
+  const message =
+    document.getElementById("message");
+
+  const analysis =
+    document.getElementById("analysis");
+
+  if (!currentIdea) {
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent =
+    "Building your business...";
+
+  message.textContent =
+    "Venturo is creating your business blueprint...";
+
+  analysis.style.display = "none";
+
+  try {
+
+    const response =
+      await fetch("/api", {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          action: "build",
+          idea: currentIdea,
+          budget: currentBudget
+        })
+      });
+
+    const data =
+      await response.json();
+
+    if (!response.ok || !data.success) {
+
+      throw new Error(
+        data.error ||
+        "Business builder error."
+      );
+
     }
 
-    function escapeHtml(value) {
+    if (!data.analysis) {
 
-      return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+      throw new Error(
+        "Invalid business analysis."
+      );
 
     }
 
-  </script>
+    renderAnalysis(
+      data.analysis
+    );
+
+    analysis.style.display = "block";
+
+    message.textContent =
+      "Your business blueprint is ready.";
+
+    analysis.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+  } catch (error) {
+
+    console.error(
+      "Venturo Builder error:",
+      error
+    );
+
+    message.textContent =
+      "Venturo could not build the business plan yet.";
+
+  } finally {
+
+    button.disabled = false;
+    button.textContent =
+      "🚀 Build My Business";
+
+  }
+}
+
+function renderAnalysis(data) {
+
+  document.getElementById(
+    "score"
+  ).textContent =
+    data.score
+      ? `${data.score}/10`
+      : "—";
+
+  document.getElementById(
+    "targetCustomer"
+  ).textContent =
+    data.targetCustomer || "—";
+
+  document.getElementById(
+    "startupCost"
+  ).textContent =
+    data.startupCost || "—";
+
+  document.getElementById(
+    "revenueModel"
+  ).textContent =
+    data.revenueModel || "—";
+
+  document.getElementById(
+    "competition"
+  ).textContent =
+    data.competition || "—";
+
+  document.getElementById(
+    "growthPotential"
+  ).textContent =
+    data.growthPotential || "—";
+
+  document.getElementById(
+    "bestModel"
+  ).textContent =
+    data.bestBusinessModel || "—";
+
+  document.getElementById(
+    "summary"
+  ).textContent =
+    data.summary || "—";
+
+  const steps =
+    document.getElementById(
+      "firstSteps"
+    );
+
+  steps.innerHTML = "";
+
+  if (Array.isArray(data.firstSteps)) {
+
+    data.firstSteps.forEach(step => {
+
+      const li =
+        document.createElement("li");
+
+      li.textContent = step;
+
+      steps.appendChild(li);
+
+    });
+
+  }
+
+  const risks =
+    document.getElementById(
+      "risks"
+    );
+
+  risks.innerHTML = "";
+
+  if (Array.isArray(data.risks)) {
+
+    data.risks.forEach(risk => {
+
+      const li =
+        document.createElement("li");
+
+      li.textContent = risk;
+
+      risks.appendChild(li);
+
+    });
+
+  }
+
+  document.getElementById(
+    "nextAction"
+  ).textContent =
+    data.nextAction || "—";
+}
+
+function escapeHtml(value) {
+
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+</script>
 
 </body>
 </html>
