@@ -6,7 +6,6 @@ const client = new OpenAI({
 
 export default async function handler(req, res) {
 
-  // CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Methods",
@@ -17,12 +16,10 @@ export default async function handler(req, res) {
     "Content-Type"
   );
 
-  // OPTIONS
   if (req.method === "OPTIONS") {
     return res.status(204).end();
   }
 
-  // GET - health check
   if (req.method === "GET") {
     return res.status(200).json({
       ok: true,
@@ -32,7 +29,6 @@ export default async function handler(req, res) {
     });
   }
 
-  // POST only
   if (req.method !== "POST") {
     return res.status(405).json({
       ok: false,
@@ -57,6 +53,12 @@ export default async function handler(req, res) {
       ""
     ).trim();
 
+    const selectedBusiness = String(
+      body.selectedBusiness ||
+      body.business ||
+      ""
+    ).trim();
+
     const budget = String(
       body.budget ||
       body.maxBudget ||
@@ -77,30 +79,41 @@ export default async function handler(req, res) {
 
     if (action === "build") {
 
+      const businessToBuild =
+        selectedBusiness || idea;
+
       const prompt = `
 You are Venturo, a professional global AI business builder.
 
-The user wants to build a real business.
+The user has searched for a business idea and selected a specific business opportunity.
 
-BUSINESS IDEA:
+ORIGINAL USER IDEA:
 ${idea}
+
+SELECTED BUSINESS:
+${businessToBuild}
 
 AVAILABLE BUDGET:
 ${budget}
 
-Create a practical business blueprint.
+Your job is to create a practical and realistic business blueprint
+specifically for the SELECTED BUSINESS.
+
+Do not give a generic analysis of the original idea.
+Focus on the selected business.
 
 Return ONLY valid JSON using exactly this structure:
 
 {
-  "summary": "short business summary",
+  "businessName": "name of the selected business",
+  "summary": "short practical business summary",
   "score": 8,
   "targetCustomer": "ideal target customers",
   "startupCost": "realistic estimated startup cost",
   "revenueModel": "how the business makes money",
   "competition": "competition assessment",
   "growthPotential": "growth assessment",
-  "bestBusinessModel": "best business model for this idea",
+  "bestBusinessModel": "best business model",
   "firstSteps": [
     "Step 1",
     "Step 2",
@@ -124,13 +137,13 @@ RULES:
 - score must be a number from 1 to 10.
 - Give exactly 7 first steps.
 - Give exactly 4 risks.
-- Make everything specific to the user's business idea.
-- Respect the user's budget.
-- Be realistic.
+- Keep the plan realistic for the available budget.
+- Do not recommend spending far beyond the user's budget.
 - Do not promise guaranteed profits.
 - Do not invent statistics.
-- Keep the language clear and practical.
-- Use English.
+- Make the recommendations practical.
+- Consider the user's likely starting position.
+- Use clear English.
 `;
 
       const response =
@@ -167,7 +180,8 @@ RULES:
         return res.status(500).json({
           ok: false,
           success: false,
-          error: "AI returned invalid business analysis."
+          error:
+            "AI returned invalid business analysis."
         });
 
       }
@@ -177,6 +191,8 @@ RULES:
         success: true,
         action: "build",
         idea,
+        selectedBusiness:
+          businessToBuild,
         budget,
         analysis
       });
@@ -189,15 +205,18 @@ RULES:
     const prompt = `
 You are Venturo, a professional global AI business builder.
 
-Analyze the user's business idea.
+The user wants to find realistic businesses.
 
-BUSINESS IDEA:
+USER IDEA:
 ${idea}
 
 AVAILABLE BUDGET:
 ${budget}
 
-Create exactly 8 practical business opportunities related specifically to the user's idea.
+Create exactly 8 practical business opportunities
+related specifically to the user's request.
+
+Every opportunity must be realistic for the available budget.
 
 Return ONLY valid JSON using exactly this structure:
 
@@ -216,15 +235,15 @@ Return ONLY valid JSON using exactly this structure:
 RULES:
 
 - Return exactly 8 recommendations.
-- Every recommendation must be related to the user's actual idea.
-- Do not return unrelated generic businesses.
+- Make each recommendation different.
+- Every recommendation must be related to the user's request.
 - Respect the user's budget.
+- Avoid generic unrelated businesses.
 - Difficulty must be Easy, Medium, or Hard.
 - Potential must be Low, Medium, or High.
 - Do not promise guaranteed profits.
-- Use realistic business ideas.
-- Keep descriptions concise.
-- Use English.
+- Use realistic startup costs.
+- Use clear English.
 `;
 
     const response =
@@ -261,7 +280,8 @@ RULES:
       return res.status(500).json({
         ok: false,
         success: false,
-        error: "AI returned invalid recommendations."
+        error:
+          "AI returned invalid recommendations."
       });
 
     }
@@ -276,7 +296,8 @@ RULES:
       return res.status(500).json({
         ok: false,
         success: false,
-        error: "Invalid recommendation response."
+        error:
+          "Invalid recommendation response."
       });
 
     }
@@ -305,6 +326,5 @@ RULES:
         error?.message ||
         "Venturo AI service error."
     });
-
   }
 }
