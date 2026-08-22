@@ -1,93 +1,14 @@
-<footer>
-  <div>
-    © 2026 Venturo — Global AI Business Builder
-  </div>
+// Always open Venturo at the top of the page
+if ("scrollRestoration" in history) {
+  history.scrollRestoration = "manual";
+}
 
-  <div style="margin-top:15px;">
-    <a href="#about" style="color:#cbd5e1;margin:0 10px;text-decoration:none;">
-      About
-    </a>
-
-    <a href="#contact" style="color:#cbd5e1;margin:0 10px;text-decoration:none;">
-      Contact
-    </a>
-
-    <a href="#privacy" style="color:#cbd5e1;margin:0 10px;text-decoration:none;">
-      Privacy
-    </a>
-  </div>
-</footer>
-
-<section id="about"
-  style="
-    max-width:900px;
-    margin:70px auto;
-    padding:30px 20px;
-    line-height:1.7;
-  ">
-
-  <h2>About Venturo</h2>
-
-  <p>
-    Venturo is a global AI business builder designed to help
-    entrepreneurs discover practical business opportunities
-    based on their ideas and available budget.
-  </p>
-
-  <p>
-    Venturo can compare business opportunities and create
-    a practical starting blueprint for selected ideas.
-  </p>
-
-</section>
-
-<section id="contact"
-  style="
-    max-width:900px;
-    margin:70px auto;
-    padding:30px 20px;
-    line-height:1.7;
-  ">
-
-  <h2>Contact</h2>
-
-  <p>
-    For questions, feedback or business enquiries, please
-    contact the Venturo team.
-  </p>
-
-  <p>
-    Email:
-    <strong>contact@venturo.ai</strong>
-  </p>
-
-</section>
-
-<section id="privacy"
-  style="
-    max-width:900px;
-    margin:70px auto;
-    padding:30px 20px;
-    line-height:1.7;
-  ">
-
-  <h2>Privacy</h2>
-
-  <p>
-    Venturo processes information submitted by users to
-    provide business recommendations and AI-generated
-    business plans.
-  </p>
-
-  <p>
-    Users should not submit passwords, payment information,
-    government identification numbers, or other sensitive
-    personal information into the business idea field.
-  </p>
-
-  <p>
-    Venturo may use third-party AI services to process
-    submitted business requests and generate recommendations.
-  </p>
-
-</section>
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "instant"
+    });
+  }, 100);
+});
