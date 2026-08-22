@@ -1,14 +1,1442 @@
-// Always open Venturo at the top of the page
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Venturo — Global AI Business Builder</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f6fa;
+      color: #111827;
+    }
+
+    header {
+      background: #071126;
+      color: white;
+      padding: 22px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .logo span {
+      color: #3b82f6;
+    }
+
+    nav {
+      display: flex;
+      gap: 25px;
+      font-size: 15px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #101b3d, #182653);
+      color: white;
+      padding: 90px 6% 130px;
+    }
+
+    .hero-inner {
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .eyebrow {
+      color: #8db9ff;
+      font-weight: 700;
+      letter-spacing: 3px;
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
+
+    h1 {
+      font-size: clamp(48px, 7vw, 76px);
+      line-height: 1;
+      margin: 0 0 30px;
+      max-width: 850px;
+    }
+
+    .subtitle {
+      color: #cbd5e1;
+      font-size: 20px;
+      line-height: 1.7;
+      max-width: 760px;
+    }
+
+    .builder {
+      max-width: 1000px;
+      margin: -70px auto 0;
+      position: relative;
+      padding: 28px;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 180px 150px;
+      gap: 12px;
+    }
+
+    input,
+    select,
+    button {
+      height: 58px;
+      border-radius: 12px;
+      font-size: 16px;
+    }
+
+    input,
+    select {
+      border: 1px solid #d1d5db;
+      padding: 0 16px;
+      background: white;
+      width: 100%;
+    }
+
+    button {
+      border: none;
+      background: #2563eb;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .message {
+      margin-top: 15px;
+      color: #64748b;
+      min-height: 22px;
+    }
+
+    .section {
+      max-width: 1100px;
+      margin: 70px auto;
+      padding: 0 20px;
+    }
+
+    .section h2 {
+      font-size: 36px;
+      margin-bottom: 30px;
+    }
+
+    #results {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 25px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, border 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .card.selected {
+      border: 2px solid #2563eb;
+      box-shadow: 0 10px 30px rgba(37, 99, 235, 0.15);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      font-size: 22px;
+    }
+
+    .card p {
+      color: #64748b;
+      line-height: 1.6;
+    }
+
+    .select-project {
+      margin-top: 20px;
+      width: 100%;
+      height: 48px;
+      background: #111827;
+    }
+
+    .select-project:hover {
+      background: #1f2937;
+    }
+
+    .card.selected .select-project {
+      background: #2563eb;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .tag {
+      background: #eef2ff;
+      color: #3730a3;
+      padding: 7px 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .build-section {
+      display: none;
+      margin-top: 35px;
+      text-align: center;
+    }
+
+    .selected-label {
+      color: #2563eb;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    .build-button {
+      width: 100%;
+      max-width: 420px;
+      height: 62px;
+      font-size: 18px;
+      background: #111827;
+    }
+
+    .build-button:hover {
+      background: #1f2937;
+    }
+
+    .analysis {
+      display: none;
+      margin-top: 45px;
+      background: white;
+      border-radius: 24px;
+      padding: 30px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+    }
+
+    .analysis h2 {
+      margin-top: 0;
+      font-size: 34px;
+    }
+
+    .analysis-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      margin-top: 25px;
+    }
+
+    .analysis-box {
+      background: #f8fafc;
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .analysis-box strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .analysis-box div {
+      font-size: 17px;
+      line-height: 1.5;
+    }
+
+    .score {
+      font-size: 48px !important;
+      font-weight: 800;
+      color: #2563eb;
+    }
+
+    .steps {
+      margin-top: 25px;
+    }
+
+    .steps ol {
+      padding-left: 25px;
+      line-height: 1.8;
+    }
+
+    .risks {
+      margin-top: 25px;
+    }
+
+    .risks ul {
+      padding-left: 25px;
+      line-height: 1.8;
+    }
+
+    .next-action {
+      margin-top: 30px;
+      padding: 22px;
+      background: #eef2ff;
+      border-radius: 16px;
+    }
+
+    .next-action strong {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .empty {
+      color: #64748b;
+      font-size: 18px;
+    }
+
+    .info-section {
+      max-width: 900px;
+      margin: 80px auto;
+      padding: 0 20px;
+      line-height: 1.7;
+    }
+
+    .info-section h2 {
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+
+    .info-section p {
+      color: #475569;
+      font-size: 17px;
+    }
+
+    footer {
+      background: #071126;
+      color: #94a3b8;
+      text-align: center;
+      padding: 35px 20px;
+      margin-top: 100px;
+    }
+
+    .footer-links {
+      margin-top: 15px;
+    }
+
+    .footer-links a {
+      color: #cbd5e1;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+
+    .footer-links a:hover {
+      color: white;
+    }
+
+    @media (max-width: 750px) {
+
+      header {
+        padding: 20px;
+      }
+
+      .hero {
+        padding: 65px 20px 110px;
+      }
+
+      h1 {
+        font-size: 50px;
+      }
+
+      .subtitle {
+        font-size: 18px;
+      }
+
+      .builder {
+        margin: -55px 16px 0;
+        padding: 18px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      #results {
+        grid-template-columns: 1fr;
+      }
+
+      .analysis-grid {
+        grid-template-columns: 1fr;
+      }
+
+      nav {
+        gap: 12px;
+      }
+
+      .card {
+        padding: 20px;
+      }
+
+      .analysis {
+        padding: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+
+  <div class="logo">
+    Venturo<span>.</span>
+  </div>
+
+  <nav>
+    <a href="#builder">Builder</a>
+    <a href="#ideas">Ideas</a>
+  </nav>
+
+</header>
+
+
+<section class="hero">
+
+  <div class="hero-inner">
+
+    <div class="eyebrow">
+      GLOBAL AI BUSINESS BUILDER
+    </div>
+
+    <h1>
+      Turn an idea into a business.
+    </h1>
+
+    <div class="subtitle">
+      Venturo helps entrepreneurs discover practical business
+      opportunities, compare options, and turn a simple idea
+      into an actionable starting plan.
+    </div>
+
+  </div>
+
+</section>
+
+
+<section class="builder" id="builder">
+
+  <div class="form-row">
+
+    <input
+      id="idea"
+      type="text"
+      placeholder="What do you want to build? e.g. online business for £100"
+    >
+
+    <select id="budget">
+
+      <option value="Any budget">
+        Any budget
+      </option>
+
+      <option value="£0–£100">
+        £0–£100
+      </option>
+
+      <option value="£100–£500">
+        £100–£500
+      </option>
+
+      <option value="£500–£1,000">
+        £500–£1,000
+      </option>
+
+      <option value="£1,000+">
+        £1,000+
+      </option>
+
+    </select>
+
+    <button
+      id="findButton"
+      onclick="findIdeas()"
+    >
+      Find ideas
+    </button>
+
+  </div>
+
+  <div
+    id="message"
+    class="message"
+  ></div>
+
+</section>
+
+
+<section
+  class="section"
+  id="ideas"
+>
+
+  <h2>
+    Business opportunities
+  </h2>
+
+  <div id="results">
+
+    <div class="empty">
+      Enter an idea above to discover business opportunities.
+    </div>
+
+  </div>
+
+
+  <div
+    id="buildSection"
+    class="build-section"
+  >
+
+    <div
+      id="selectedLabel"
+      class="selected-label"
+    ></div>
+
+    <button
+      id="buildButton"
+      class="build-button"
+      onclick="buildBusiness()"
+    >
+      🚀 Build My Business
+    </button>
+
+  </div>
+
+
+  <div
+    id="analysis"
+    class="analysis"
+  >
+
+    <h2>
+      Your Business Blueprint
+    </h2>
+
+
+    <div class="analysis-grid">
+
+      <div class="analysis-box">
+
+        <strong>
+          Idea Score
+        </strong>
+
+        <div
+          id="score"
+          class="score"
+        >
+          —
+        </div>
+
+      </div>
+
+
+      <div class="analysis-box">
+
+        <strong>
+          Target Customers
+        </strong>
+
+        <div id="targetCustomer">
+          —
+        </div>
+
+      </div>
+
+
+      <div class="analysis-box">
+
+        <strong>
+          Startup Cost
+        </strong>
+
+        <div id="startupCost">
+          —
+        </div>
+
+      </div>
+
+
+      <div class="analysis-box">
+
+        <strong>
+          Revenue Model
+        </strong>
+
+        <div id="revenueModel">
+          —
+        </div>
+
+      </div>
+
+
+      <div class="analysis-box">
+
+        <strong>
+          Competition
+        </strong>
+
+        <div id="competition">
+          —
+        </div>
+
+      </div>
+
+
+      <div class="analysis-box">
+
+        <strong>
+          Growth Potential
+        </strong>
+
+        <div id="growthPotential">
+          —
+        </div>
+
+      </div>
+
+
+      <div class="analysis-box">
+
+        <strong>
+          Best Business Model
+        </strong>
+
+        <div id="bestModel">
+          —
+        </div>
+
+      </div>
+
+
+      <div class="analysis-box">
+
+        <strong>
+          Summary
+        </strong>
+
+        <div id="summary">
+          —
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="steps">
+
+      <h3>
+        First 7 Steps
+      </h3>
+
+      <ol id="firstSteps"></ol>
+
+    </div>
+
+
+    <div class="risks">
+
+      <h3>
+        Key Risks
+      </h3>
+
+      <ul id="risks"></ul>
+
+    </div>
+
+
+    <div class="next-action">
+
+      <strong>
+        Recommended Next Action
+      </strong>
+
+      <div id="nextAction">
+        —
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<section
+  id="about"
+  class="info-section"
+>
+
+  <h2>
+    About Venturo
+  </h2>
+
+  <p>
+    Venturo is a global AI business builder designed to help
+    entrepreneurs discover practical business opportunities
+    based on their ideas and available budget.
+  </p>
+
+  <p>
+    Venturo can compare business opportunities and create
+    practical starting blueprints for selected ideas.
+  </p>
+
+</section>
+
+
+<section
+  id="contact"
+  class="info-section"
+>
+
+  <h2>
+    Contact
+  </h2>
+
+  <p>
+    For questions, feedback or business enquiries,
+    please contact the Venturo team.
+  </p>
+
+  <p>
+    Email:
+    <strong>contact@venturo.ai</strong>
+  </p>
+
+</section>
+
+
+<section
+  id="privacy"
+  class="info-section"
+>
+
+  <h2>
+    Privacy
+  </h2>
+
+  <p>
+    Venturo processes information submitted by users to
+    provide business recommendations and AI-generated
+    business plans.
+  </p>
+
+  <p>
+    Users should not submit passwords, payment information,
+    government identification numbers, government IDs,
+    or other sensitive personal information into the
+    business idea field.
+  </p>
+
+  <p>
+    Venturo may use third-party AI services to process
+    submitted business requests and generate recommendations.
+  </p>
+
+</section>
+
+
+<footer>
+
+  <div>
+    © 2026 Venturo — Global AI Business Builder
+  </div>
+
+  <div class="footer-links">
+
+    <a href="#about">
+      About
+    </a>
+
+    <a href="#contact">
+      Contact
+    </a>
+
+    <a href="#privacy">
+      Privacy
+    </a>
+
+  </div>
+
+</footer>
+
+
+<script>
+
+let currentIdea = "";
+let currentBudget = "";
+let selectedBusiness = "";
+
+
+/*
+========================================================
+KEEP PAGE AT TOP WHEN OPENING / RELOADING
+========================================================
+*/
+
 if ("scrollRestoration" in history) {
   history.scrollRestoration = "manual";
 }
 
-window.addEventListener("load", () => {
-  setTimeout(() => {
+window.addEventListener("load", function () {
+
+  setTimeout(function () {
+
     window.scrollTo({
       top: 0,
       left: 0,
-      behavior: "instant"
+      behavior: "auto"
     });
+
   }, 100);
+
 });
+
+
+/*
+========================================================
+FIND BUSINESS IDEAS
+========================================================
+*/
+
+async function findIdeas() {
+
+  const ideaInput =
+    document.getElementById("idea");
+
+  const budgetInput =
+    document.getElementById("budget");
+
+  const button =
+    document.getElementById("findButton");
+
+  const message =
+    document.getElementById("message");
+
+  const results =
+    document.getElementById("results");
+
+  const buildSection =
+    document.getElementById("buildSection");
+
+  const analysis =
+    document.getElementById("analysis");
+
+  const idea =
+    ideaInput.value.trim();
+
+  const budget =
+    budgetInput.value;
+
+
+  if (!idea) {
+
+    message.textContent =
+      "Please enter a business idea.";
+
+    ideaInput.focus();
+
+    return;
+  }
+
+
+  currentIdea = idea;
+  currentBudget = budget;
+  selectedBusiness = "";
+
+
+  buildSection.style.display = "none";
+  analysis.style.display = "none";
+
+  button.disabled = true;
+  button.textContent = "Finding...";
+
+  message.textContent =
+    "Finding the best business opportunities...";
+
+  results.innerHTML = "";
+
+
+  try {
+
+    const response =
+      await fetch("/api", {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+
+          idea: idea,
+          budget: budget
+
+        })
+
+      });
+
+
+    const data =
+      await response.json();
+
+
+    if (!response.ok || !data.success) {
+
+      throw new Error(
+        data.error ||
+        "Recommendation service error."
+      );
+
+    }
+
+
+    if (
+      !Array.isArray(
+        data.recommendations
+      )
+    ) {
+
+      throw new Error(
+        "Invalid recommendation response."
+      );
+
+    }
+
+
+    message.textContent =
+      `Found ${data.recommendations.length} business opportunities.`;
+
+
+    results.innerHTML =
+      data.recommendations
+        .map((item, index) => {
+
+          return `
+
+            <div
+              class="card"
+              id="business-card-${index}"
+              onclick="selectBusiness(${index})"
+            >
+
+              <h3>
+                ${escapeHtml(item.title)}
+              </h3>
+
+              <p>
+                ${escapeHtml(item.description)}
+              </p>
+
+              <div class="tags">
+
+                <div class="tag">
+                  Budget:
+                  ${escapeHtml(item.budget)}
+                </div>
+
+                <div class="tag">
+                  Difficulty:
+                  ${escapeHtml(item.difficulty)}
+                </div>
+
+                <div class="tag">
+                  Potential:
+                  ${escapeHtml(item.potential)}
+                </div>
+
+              </div>
+
+              <button
+                type="button"
+                class="select-project"
+                onclick="event.stopPropagation(); selectBusiness(${index})"
+              >
+                Click to select
+              </button>
+
+            </div>
+
+          `;
+
+        })
+        .join("");
+
+
+    window.venturoRecommendations =
+      data.recommendations;
+
+  } catch (error) {
+
+    console.error(
+      "Venturo API error:",
+      error
+    );
+
+
+    message.textContent =
+      "Venturo could not reach the recommendation service. Please try again.";
+
+
+    results.innerHTML = `
+
+      <div class="empty">
+        The recommendation service is temporarily unavailable.
+      </div>
+
+    `;
+
+  } finally {
+
+    button.disabled = false;
+    button.textContent = "Find ideas";
+
+  }
+
+}
+
+
+/*
+========================================================
+SELECT BUSINESS
+========================================================
+*/
+
+function selectBusiness(index) {
+
+  const recommendations =
+    window.venturoRecommendations || [];
+
+  const item =
+    recommendations[index];
+
+  if (!item) {
+    return;
+  }
+
+
+  selectedBusiness =
+    item.title;
+
+
+  document
+    .querySelectorAll(".card")
+    .forEach(card => {
+
+      card.classList.remove(
+        "selected"
+      );
+
+    });
+
+
+  const selectedCard =
+    document.getElementById(
+      `business-card-${index}`
+    );
+
+
+  if (selectedCard) {
+
+    selectedCard.classList.add(
+      "selected"
+    );
+
+  }
+
+
+  const buildSection =
+    document.getElementById(
+      "buildSection"
+    );
+
+
+  const selectedLabel =
+    document.getElementById(
+      "selectedLabel"
+    );
+
+
+  selectedLabel.textContent =
+    `Selected: ${item.title}`;
+
+
+  buildSection.style.display =
+    "block";
+
+
+  const analysis =
+    document.getElementById(
+      "analysis"
+    );
+
+
+  analysis.style.display =
+    "none";
+
+
+  buildSection.scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
+
+}
+
+
+/*
+========================================================
+BUILD BUSINESS
+========================================================
+*/
+
+async function buildBusiness() {
+
+  const button =
+    document.getElementById(
+      "buildButton"
+    );
+
+  const message =
+    document.getElementById(
+      "message"
+    );
+
+  const analysis =
+    document.getElementById(
+      "analysis"
+    );
+
+
+  if (!currentIdea) {
+    return;
+  }
+
+
+  if (!selectedBusiness) {
+
+    message.textContent =
+      "Please select a business opportunity first.";
+
+    return;
+  }
+
+
+  button.disabled = true;
+
+  button.textContent =
+    "Building your business...";
+
+
+  message.textContent =
+    "Venturo is creating your business blueprint...";
+
+
+  analysis.style.display =
+    "none";
+
+
+  try {
+
+    const response =
+      await fetch("/api", {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+
+          action: "build",
+
+          idea:
+            `${currentIdea}. Selected business: ${selectedBusiness}`,
+
+          budget:
+            currentBudget
+
+        })
+
+      });
+
+
+    const data =
+      await response.json();
+
+
+    if (!response.ok || !data.success) {
+
+      throw new Error(
+        data.error ||
+        "Business builder error."
+      );
+
+    }
+
+
+    if (!data.analysis) {
+
+      throw new Error(
+        "Invalid business analysis."
+      );
+
+    }
+
+
+    renderAnalysis(
+      data.analysis
+    );
+
+
+    analysis.style.display =
+      "block";
+
+
+    message.textContent =
+      "Your business blueprint is ready.";
+
+
+    analysis.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+
+  } catch (error) {
+
+    console.error(
+      "Venturo Builder error:",
+      error
+    );
+
+
+    message.textContent =
+      "Venturo could not build the business plan yet.";
+
+  } finally {
+
+    button.disabled = false;
+
+    button.textContent =
+      "🚀 Build My Business";
+
+  }
+
+}
+
+
+/*
+========================================================
+RENDER BUSINESS BLUEPRINT
+========================================================
+*/
+
+function renderAnalysis(data) {
+
+  document.getElementById(
+    "score"
+  ).textContent =
+    data.score
+      ? `${data.score}/10`
+      : "—";
+
+
+  document.getElementById(
+    "targetCustomer"
+  ).textContent =
+    data.targetCustomer || "—";
+
+
+  document.getElementById(
+    "startupCost"
+  ).textContent =
+    data.startupCost || "—";
+
+
+  document.getElementById(
+    "revenueModel"
+  ).textContent =
+    data.revenueModel || "—";
+
+
+  document.getElementById(
+    "competition"
+  ).textContent =
+    data.competition || "—";
+
+
+  document.getElementById(
+    "growthPotential"
+  ).textContent =
+    data.growthPotential || "—";
+
+
+  document.getElementById(
+    "bestModel"
+  ).textContent =
+    data.bestBusinessModel || "—";
+
+
+  document.getElementById(
+    "summary"
+  ).textContent =
+    data.summary || "—";
+
+
+  const steps =
+    document.getElementById(
+      "firstSteps"
+    );
+
+
+  steps.innerHTML = "";
+
+
+  if (Array.isArray(data.firstSteps)) {
+
+    data.firstSteps.forEach(
+      step => {
+
+        const li =
+          document.createElement(
+            "li"
+          );
+
+        li.textContent =
+          step;
+
+        steps.appendChild(
+          li
+        );
+
+      }
+    );
+
+  }
+
+
+  const risks =
+    document.getElementById(
+      "risks"
+    );
+
+
+  risks.innerHTML = "";
+
+
+  if (Array.isArray(data.risks)) {
+
+    data.risks.forEach(
+      risk => {
+
+        const li =
+          document.createElement(
+            "li"
+          );
+
+        li.textContent =
+          risk;
+
+        risks.appendChild(
+          li
+        );
+
+      }
+    );
+
+  }
+
+
+  document.getElementById(
+    "nextAction"
+  ).textContent =
+    data.nextAction || "—";
+
+}
+
+
+/*
+========================================================
+HTML SECURITY
+========================================================
+*/
+
+function escapeHtml(value) {
+
+  return String(value)
+
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+
+    .replace(
+      /</g,
+      "&lt;"
+    )
+
+    .replace(
+      />/g,
+      "&gt;"
+    )
+
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+
+}
+
+</script>
+
+</body>
+</html>
