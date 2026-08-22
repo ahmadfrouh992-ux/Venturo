@@ -151,8 +151,20 @@
       background: white;
       border-radius: 18px;
       padding: 25px;
-      border: 1px solid #e5e7eb;
+      border: 2px solid #e5e7eb;
       box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .card:hover {
+      border-color: #2563eb;
+      transform: translateY(-2px);
+    }
+
+    .card.selected {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
     }
 
     .card h3 {
@@ -181,10 +193,27 @@
       font-weight: 600;
     }
 
+    .select-label {
+      display: block;
+      margin-top: 10px;
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 700;
+    }
+
     .build-section {
       display: none;
       margin-top: 35px;
       text-align: center;
+    }
+
+    .selected-business {
+      background: #eef2ff;
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 18px;
+      color: #3730a3;
+      font-weight: 700;
     }
 
     .build-button {
@@ -212,6 +241,13 @@
     .analysis h2 {
       margin-top: 0;
       font-size: 34px;
+    }
+
+    .business-name {
+      color: #2563eb;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 25px;
     }
 
     .analysis-grid {
@@ -356,9 +392,9 @@
     </h1>
 
     <div class="subtitle">
-      Venturo helps entrepreneurs discover practical business
-      opportunities, compare options, and turn a simple idea
-      into an actionable starting plan.
+      Tell Venturo what you want to build and how much
+      you can invest. Venturo discovers practical business
+      opportunities and builds a starting plan for you.
     </div>
 
   </div>
@@ -371,7 +407,7 @@
     <input
       id="idea"
       type="text"
-      placeholder="What do you want to build? e.g. online business for £100"
+      placeholder="What do you want to build? e.g. online business"
     >
 
     <select id="budget">
@@ -382,7 +418,10 @@
       <option value="£1,000+">£1,000+</option>
     </select>
 
-    <button id="findButton" onclick="findIdeas()">
+    <button
+      id="findButton"
+      onclick="findIdeas()"
+    >
       Find ideas
     </button>
 
@@ -408,6 +447,13 @@
 
   <div id="buildSection" class="build-section">
 
+    <div
+      id="selectedBusiness"
+      class="selected-business"
+    >
+      Select a business opportunity above.
+    </div>
+
     <button
       id="buildButton"
       class="build-button"
@@ -423,6 +469,11 @@
     <h2>
       Your Business Blueprint
     </h2>
+
+    <div
+      id="businessName"
+      class="business-name"
+    ></div>
 
     <div class="analysis-grid">
 
@@ -495,6 +546,7 @@
 
 let currentIdea = "";
 let currentBudget = "";
+let selectedBusiness = "";
 
 async function findIdeas() {
 
@@ -537,6 +589,7 @@ async function findIdeas() {
 
   currentIdea = idea;
   currentBudget = budget;
+  selectedBusiness = "";
 
   buildSection.style.display = "none";
   analysis.style.display = "none";
@@ -574,7 +627,6 @@ async function findIdeas() {
         data.error ||
         "Recommendation service error."
       );
-
     }
 
     if (
@@ -586,18 +638,21 @@ async function findIdeas() {
       throw new Error(
         "Invalid recommendation response."
       );
-
     }
 
     message.textContent =
-      `Found ${data.recommendations.length} business opportunities.`;
+      "Select one business opportunity to continue.";
 
     results.innerHTML =
       data.recommendations
-        .map(item => {
+        .map((item, index) => {
 
           return `
-            <div class="card">
+            <div
+              class="card"
+              data-index="${index}"
+              onclick="selectBusiness(${index})"
+            >
 
               <h3>
                 ${escapeHtml(item.title)}
@@ -626,13 +681,18 @@ async function findIdeas() {
 
               </div>
 
+              <span class="select-label">
+                Click to select
+              </span>
+
             </div>
           `;
 
         })
         .join("");
 
-    buildSection.style.display = "block";
+    window.venturoRecommendations =
+      data.recommendations;
 
   } catch (error) {
 
@@ -658,29 +718,102 @@ async function findIdeas() {
   }
 }
 
+function selectBusiness(index) {
+
+  const recommendations =
+    window.venturoRecommendations || [];
+
+  const item =
+    recommendations[index];
+
+  if (!item) {
+    return;
+  }
+
+  selectedBusiness =
+    item.title;
+
+  document
+    .querySelectorAll(".card")
+    .forEach(card => {
+      card.classList.remove("selected");
+    });
+
+  const selectedCard =
+    document.querySelector(
+      `.card[data-index="${index}"]`
+    );
+
+  if (selectedCard) {
+    selectedCard.classList.add("selected");
+  }
+
+  const buildSection =
+    document.getElementById(
+      "buildSection"
+    );
+
+  const selectedBox =
+    document.getElementById(
+      "selectedBusiness"
+    );
+
+  selectedBox.textContent =
+    `Selected: ${selectedBusiness}`;
+
+  buildSection.style.display =
+    "block";
+
+  document.getElementById(
+    "message"
+  ).textContent =
+    "Business selected. Build your plan.";
+
+  buildSection.scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
+}
+
 async function buildBusiness() {
 
   const button =
-    document.getElementById("buildButton");
+    document.getElementById(
+      "buildButton"
+    );
 
   const message =
-    document.getElementById("message");
+    document.getElementById(
+      "message"
+    );
 
   const analysis =
-    document.getElementById("analysis");
+    document.getElementById(
+      "analysis"
+    );
 
   if (!currentIdea) {
     return;
   }
 
+  if (!selectedBusiness) {
+
+    message.textContent =
+      "Please select a business opportunity first.";
+
+    return;
+  }
+
   button.disabled = true;
+
   button.textContent =
     "Building your business...";
 
   message.textContent =
     "Venturo is creating your business blueprint...";
 
-  analysis.style.display = "none";
+  analysis.style.display =
+    "none";
 
   try {
 
@@ -695,7 +828,9 @@ async function buildBusiness() {
         body: JSON.stringify({
           action: "build",
           idea: currentIdea,
-          budget: currentBudget
+          budget: currentBudget,
+          selectedBusiness:
+            selectedBusiness
         })
       });
 
@@ -708,7 +843,6 @@ async function buildBusiness() {
         data.error ||
         "Business builder error."
       );
-
     }
 
     if (!data.analysis) {
@@ -716,14 +850,14 @@ async function buildBusiness() {
       throw new Error(
         "Invalid business analysis."
       );
-
     }
 
     renderAnalysis(
       data.analysis
     );
 
-    analysis.style.display = "block";
+    analysis.style.display =
+      "block";
 
     message.textContent =
       "Your business blueprint is ready.";
@@ -741,11 +875,13 @@ async function buildBusiness() {
     );
 
     message.textContent =
+      error.message ||
       "Venturo could not build the business plan yet.";
 
   } finally {
 
     button.disabled = false;
+
     button.textContent =
       "🚀 Build My Business";
 
@@ -753,6 +889,12 @@ async function buildBusiness() {
 }
 
 function renderAnalysis(data) {
+
+  document.getElementById(
+    "businessName"
+  ).textContent =
+    data.businessName ||
+    selectedBusiness;
 
   document.getElementById(
     "score"
@@ -803,19 +945,26 @@ function renderAnalysis(data) {
 
   steps.innerHTML = "";
 
-  if (Array.isArray(data.firstSteps)) {
+  if (
+    Array.isArray(
+      data.firstSteps
+    )
+  ) {
 
-    data.firstSteps.forEach(step => {
+    data.firstSteps.forEach(
+      step => {
 
-      const li =
-        document.createElement("li");
+        const li =
+          document.createElement(
+            "li"
+          );
 
-      li.textContent = step;
+        li.textContent = step;
 
-      steps.appendChild(li);
+        steps.appendChild(li);
 
-    });
-
+      }
+    );
   }
 
   const risks =
@@ -825,19 +974,26 @@ function renderAnalysis(data) {
 
   risks.innerHTML = "";
 
-  if (Array.isArray(data.risks)) {
+  if (
+    Array.isArray(
+      data.risks
+    )
+  ) {
 
-    data.risks.forEach(risk => {
+    data.risks.forEach(
+      risk => {
 
-      const li =
-        document.createElement("li");
+        const li =
+          document.createElement(
+            "li"
+          );
 
-      li.textContent = risk;
+        li.textContent = risk;
 
-      risks.appendChild(li);
+        risks.appendChild(li);
 
-    });
-
+      }
+    );
   }
 
   document.getElementById(
@@ -849,12 +1005,26 @@ function renderAnalysis(data) {
 function escapeHtml(value) {
 
   return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
 }
 
 </script>
