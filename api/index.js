@@ -292,7 +292,7 @@ const response =
   await client.responses.create({
     model: "gpt-5.6-luna",
     input: prompt,
-    max_output_tokens: 900
+    max_output_tokens: 1600
   });
 
 const elapsedTime =
