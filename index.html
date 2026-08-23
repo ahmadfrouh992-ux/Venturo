@@ -1020,7 +1020,155 @@
   💾 Save Project
 </button>
 </section>
+<section id="savedProjects" class="info-section">
+  <h2>💾 Saved Projects</h2>
 
+  <p>
+    Your saved business projects appear here.
+  </p>
+
+  <div id="savedProjectsList"></div>
+</section>
+
+<script>
+function loadVexalunoSavedProjects() {
+  const container = document.getElementById("savedProjectsList");
+
+  if (!container) return;
+
+  let projects = [];
+
+  try {
+    projects = JSON.parse(
+      localStorage.getItem("vexalunoProjects") || "[]"
+    );
+  } catch (error) {
+    projects = [];
+  }
+
+  if (!projects.length) {
+    container.innerHTML = `
+      <div style="
+        padding:24px;
+        background:#f5f7fb;
+        border-radius:16px;
+        text-align:center;
+      ">
+        No saved projects yet.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = projects
+    .slice()
+    .reverse()
+    .map((project, index) => `
+      <div style="
+        background:white;
+        border:1px solid #dfe5ef;
+        border-radius:18px;
+        padding:22px;
+        margin:16px 0;
+        box-shadow:0 4px 14px rgba(0,0,0,0.05);
+      ">
+
+        <h3 style="margin-top:0;">
+          ${escapeVexalunoText(project.idea || "Saved Project")}
+        </h3>
+
+        <p>
+          <strong>Budget:</strong>
+          ${escapeVexalunoText(project.budget || "Not specified")}
+        </p>
+
+        <p style="font-size:14px;color:#64748b;">
+          Saved:
+          ${project.savedAt
+            ? new Date(project.savedAt).toLocaleString()
+            : "Unknown"}
+        </p>
+
+        <button
+          type="button"
+          onclick="openVexalunoSavedProject(${projects.length - 1 - index})"
+          style="
+            width:100%;
+            padding:14px;
+            border:0;
+            border-radius:12px;
+            background:#2563eb;
+            color:white;
+            font-size:16px;
+            font-weight:700;
+            cursor:pointer;
+            margin-top:8px;
+          "
+        >
+          Open Project
+        </button>
+
+      </div>
+    `)
+    .join("");
+}
+
+function openVexalunoSavedProject(index) {
+  let projects = [];
+
+  try {
+    projects = JSON.parse(
+      localStorage.getItem("vexalunoProjects") || "[]"
+    );
+  } catch (error) {
+    alert("Unable to open saved projects.");
+    return;
+  }
+
+  const project = projects[index];
+
+  if (!project) {
+    alert("Project not found.");
+    return;
+  }
+
+  window.lastVexalunoAnalysis = project.analysis || null;
+
+  alert(
+    "Project opened successfully.\n\n" +
+    (project.idea || "Saved Project")
+  );
+
+  const analysis = document.getElementById("analysis");
+
+  if (analysis && project.analysis) {
+    try {
+      renderAnalysis(project.analysis);
+      analysis.style.display = "block";
+      analysis.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    } catch (error) {
+      console.log("Analysis display could not be restored.");
+    }
+  }
+}
+
+function escapeVexalunoText(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+document.addEventListener(
+  "DOMContentLoaded",
+  loadVexalunoSavedProjects
+);
+</script>
 
 
 <section
