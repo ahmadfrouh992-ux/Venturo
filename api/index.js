@@ -80,7 +80,6 @@ export default async function handler(req, res) {
       "Any budget"
     ).trim();
 
-
     if (!idea) {
       return res.status(400).json({
         ok: false,
@@ -99,11 +98,10 @@ export default async function handler(req, res) {
       const businessToBuild =
         selectedBusiness || idea;
 
-
       const prompt = `
 You are Vexaluno, a professional global AI business builder.
 
-Create a practical, realistic business blueprint for the selected business.
+Create a realistic and practical business blueprint.
 
 ORIGINAL USER IDEA:
 ${idea}
@@ -114,57 +112,49 @@ ${businessToBuild}
 AVAILABLE BUDGET:
 ${budget}
 
+The user is a beginner.
+
+Create a useful business plan that includes:
+
+- realistic market demand
+- profit potential
+- competition
+- ease of launch
+- scalability
+- target customers
+- customer problem
+- solution
+- why the business can work
+- best business model
+- startup costs
+- revenue model
+- realistic pricing
+- realistic monthly revenue examples
+- first customer strategy
+- competition strategy
+- marketing strategy
+- tools needed
+- practical 90-day plan
+- exactly 7 first steps
+- exactly 4 key risks
+- one clear next action
+
 IMPORTANT:
 
-- Focus specifically on the selected business.
-- Assume the user is a beginner.
-- Make the plan realistic for the available budget.
-- Do not promise guaranteed profits.
-- Use realistic revenue ranges.
-- Consider competition and customer acquisition.
-- Prefer low-cost tools.
-- Give practical pricing examples.
-- Make the first-customer strategy specific.
-- Make the marketing strategy actionable.
-- Make the 90-day plan practical.
-- Give exactly 7 first steps.
-- Give exactly 4 risks.
-- Keep answers concise but useful.
-- All scores must be numbers from 1 to 10.
+Do not promise guaranteed profits.
 
-The blueprint must include:
+Use realistic estimates.
 
-1. Overall business score.
-2. Market demand score.
-3. Profit potential score.
-4. Competition score.
-5. Ease of launch score.
-6. Scalability score.
-7. Target customers.
-8. Main customer problem.
-9. Business solution.
-10. Startup cost.
-11. Revenue model.
-12. Recommended pricing.
-13. Example monthly revenue.
-14. How to get the first customer.
-15. Competition analysis.
-16. Marketing strategy.
-17. Tools needed.
-18. 90-day plan.
-19. Why the business can work.
-20. Best business model.
-21. Exactly 7 first steps.
-22. Exactly 4 key risks.
-23. One recommended next action.
+Respect the available budget.
 
-Return data matching the JSON schema exactly.
+If the budget is "Any budget", choose a sensible lean starting budget.
+
+Assume the business operates initially in London unless the user's idea clearly requires another location.
+
+Keep the answers concise but useful.
+
+All scores must be numbers from 1 to 10.
 `;
-
-
-      const startTime =
-        Date.now();
-
 
       const response =
         await client.responses.create({
@@ -176,9 +166,7 @@ Return data matching the JSON schema exactly.
           max_output_tokens: 3000,
 
           text: {
-
             format: {
-
               type: "json_schema",
 
               name: "business_blueprint",
@@ -237,6 +225,14 @@ Return data matching the JSON schema exactly.
                     type: "string"
                   },
 
+                  whyItCanWork: {
+                    type: "string"
+                  },
+
+                  bestBusinessModel: {
+                    type: "string"
+                  },
+
                   startupCost: {
                     type: "string"
                   },
@@ -253,23 +249,15 @@ Return data matching the JSON schema exactly.
                     type: "string"
                   },
 
+                  firstCustomerStrategy: {
+                    type: "string"
+                  },
+
                   competition: {
                     type: "string"
                   },
 
-                  growthPotential: {
-                    type: "string"
-                  },
-
-                  bestBusinessModel: {
-                    type: "string"
-                  },
-
                   marketingStrategy: {
-                    type: "string"
-                  },
-
-                  firstCustomerStrategy: {
                     type: "string"
                   },
 
@@ -281,26 +269,22 @@ Return data matching the JSON schema exactly.
                     type: "string"
                   },
 
-                  whyItCanWork: {
-                    type: "string"
-                  },
-
                   firstSteps: {
                     type: "array",
+                    minItems: 7,
+                    maxItems: 7,
                     items: {
                       type: "string"
-                    },
-                    minItems: 7,
-                    maxItems: 7
+                    }
                   },
 
                   risks: {
                     type: "array",
+                    minItems: 4,
+                    maxItems: 4,
                     items: {
                       type: "string"
-                    },
-                    minItems: 4,
-                    maxItems: 4
+                    }
                   },
 
                   nextAction: {
@@ -312,55 +296,35 @@ Return data matching the JSON schema exactly.
                 required: [
 
                   "businessName",
-
                   "summary",
-
                   "score",
 
                   "marketDemand",
-
                   "profitPotential",
-
                   "competitionScore",
-
                   "easeOfLaunch",
-
                   "scalability",
 
                   "targetCustomer",
-
                   "problem",
-
                   "solution",
-
-                  "startupCost",
-
-                  "revenueModel",
-
-                  "recommendedPricing",
-
-                  "expectedMonthlyRevenue",
-
-                  "competition",
-
-                  "growthPotential",
-
+                  "whyItCanWork",
                   "bestBusinessModel",
 
-                  "marketingStrategy",
+                  "startupCost",
+                  "revenueModel",
+                  "recommendedPricing",
+                  "expectedMonthlyRevenue",
 
                   "firstCustomerStrategy",
+                  "competition",
 
+                  "marketingStrategy",
                   "toolsNeeded",
-
                   "ninetyDayPlan",
 
-                  "whyItCanWork",
-
                   "firstSteps",
-
                   "risks",
-
                   "nextAction"
 
                 ]
@@ -368,24 +332,13 @@ Return data matching the JSON schema exactly.
               }
 
             }
-
           }
 
         });
 
 
-      const elapsedTime =
-        Date.now() - startTime;
-
-
-      console.log(
-        `OpenAI BUILD response time: ${elapsedTime} ms`
-      );
-
-
       const text =
         response.output_text || "";
-
 
       if (!text) {
 
@@ -395,21 +348,16 @@ Return data matching the JSON schema exactly.
         );
 
         return res.status(500).json({
-
           ok: false,
-
           success: false,
-
           error:
             "Empty AI business blueprint response."
-
         });
 
       }
 
 
       let analysis;
-
 
       try {
 
@@ -424,14 +372,10 @@ Return data matching the JSON schema exactly.
         );
 
         return res.status(500).json({
-
           ok: false,
-
           success: false,
-
           error:
             "AI returned invalid business analysis."
-
         });
 
       }
@@ -466,7 +410,7 @@ Return data matching the JSON schema exactly.
     const prompt = `
 You are Vexaluno, a professional global AI business builder.
 
-The user wants to find realistic businesses.
+The user wants realistic business opportunities.
 
 USER IDEA:
 ${idea}
@@ -474,42 +418,24 @@ ${idea}
 AVAILABLE BUDGET:
 ${budget}
 
-Create exactly 8 practical business opportunities
-related specifically to the user's request.
+Create exactly 8 practical business opportunities.
 
-Every opportunity must be realistic for the available budget.
+Every opportunity must:
 
-Return ONLY valid JSON using exactly this structure:
+- be related specifically to the user's idea
+- respect the available budget
+- be realistic
+- be different from the other opportunities
+- avoid guaranteed profit claims
 
-{
-  "recommendations": [
-    {
-      "title": "Business idea title",
-      "description": "Short practical description",
-      "budget": "Estimated startup budget",
-      "difficulty": "Easy",
-      "potential": "High"
-    }
-  ]
-}
+Difficulty must be:
+Easy, Medium, or Hard.
 
-RULES:
+Potential must be:
+Low, Medium, or High.
 
-- Return exactly 8 recommendations.
-- Make each recommendation different.
-- Every recommendation must be related to the user's request.
-- Respect the user's budget.
-- Avoid generic unrelated businesses.
-- Difficulty must be Easy, Medium, or Hard.
-- Potential must be Low, Medium, or High.
-- Do not promise guaranteed profits.
-- Use realistic startup costs.
-- Use clear English.
+Return exactly 8 recommendations.
 `;
-
-
-    const startTime =
-      Date.now();
 
 
     const response =
@@ -519,18 +445,99 @@ RULES:
 
         input: prompt,
 
-        max_output_tokens: 1600
+        max_output_tokens: 1800,
+
+        text: {
+
+          format: {
+
+            type: "json_schema",
+
+            name: "business_recommendations",
+
+            strict: true,
+
+            schema: {
+
+              type: "object",
+
+              additionalProperties: false,
+
+              properties: {
+
+                recommendations: {
+
+                  type: "array",
+
+                  minItems: 8,
+
+                  maxItems: 8,
+
+                  items: {
+
+                    type: "object",
+
+                    additionalProperties: false,
+
+                    properties: {
+
+                      title: {
+                        type: "string"
+                      },
+
+                      description: {
+                        type: "string"
+                      },
+
+                      budget: {
+                        type: "string"
+                      },
+
+                      difficulty: {
+                        type: "string",
+                        enum: [
+                          "Easy",
+                          "Medium",
+                          "Hard"
+                        ]
+                      },
+
+                      potential: {
+                        type: "string",
+                        enum: [
+                          "Low",
+                          "Medium",
+                          "High"
+                        ]
+                      }
+
+                    },
+
+                    required: [
+                      "title",
+                      "description",
+                      "budget",
+                      "difficulty",
+                      "potential"
+                    ]
+
+                  }
+
+                }
+
+              },
+
+              required: [
+                "recommendations"
+              ]
+
+            }
+
+          }
+
+        }
 
       });
-
-
-    const elapsedTime =
-      Date.now() - startTime;
-
-
-    console.log(
-      `OpenAI FIND IDEAS response time: ${elapsedTime} ms`
-    );
 
 
     const text =
@@ -540,20 +547,15 @@ RULES:
     if (!text) {
 
       return res.status(500).json({
-
         ok: false,
-
         success: false,
-
         error: "Empty AI response."
-
       });
 
     }
 
 
     let aiResult;
-
 
     try {
 
@@ -568,14 +570,10 @@ RULES:
       );
 
       return res.status(500).json({
-
         ok: false,
-
         success: false,
-
         error:
           "AI returned invalid recommendations."
-
       });
 
     }
@@ -589,14 +587,10 @@ RULES:
     ) {
 
       return res.status(500).json({
-
         ok: false,
-
         success: false,
-
         error:
           "Invalid recommendation response."
-
       });
 
     }
@@ -626,7 +620,6 @@ RULES:
       "Vexaluno AI error:",
       error
     );
-
 
     return res.status(500).json({
 
