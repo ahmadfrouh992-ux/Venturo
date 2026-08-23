@@ -182,7 +182,72 @@ const response =
   await client.responses.create({
     model: "gpt-5.6-luna",
     input: prompt,
-    max_output_tokens: 1800
+    max_output_tokens: 1800,
+    text: {
+      format: {
+        type: "json_schema",
+        name: "business_blueprint",
+        strict: true,
+        schema: {
+          type: "object",
+          additionalProperties: false,
+          properties: {
+            businessName: { type: "string" },
+            summary: { type: "string" },
+            score: { type: "number" },
+            targetCustomer: { type: "string" },
+            startupCost: { type: "string" },
+            revenueModel: { type: "string" },
+            competition: { type: "string" },
+            growthPotential: { type: "string" },
+            bestBusinessModel: { type: "string" },
+            recommendedPricing: { type: "string" },
+            expectedMonthlyRevenue: { type: "string" },
+            profitPotential: { type: "string" },
+            marketingStrategy: { type: "string" },
+            firstCustomerStrategy: { type: "string" },
+            toolsNeeded: { type: "string" },
+            ninetyDayPlan: { type: "string" },
+            whyItCanWork: { type: "string" },
+            firstSteps: {
+              type: "array",
+              items: { type: "string" },
+              minItems: 7,
+              maxItems: 7
+            },
+            risks: {
+              type: "array",
+              items: { type: "string" },
+              minItems: 4,
+              maxItems: 4
+            },
+            nextAction: { type: "string" }
+          },
+          required: [
+            "businessName",
+            "summary",
+            "score",
+            "targetCustomer",
+            "startupCost",
+            "revenueModel",
+            "competition",
+            "growthPotential",
+            "bestBusinessModel",
+            "recommendedPricing",
+            "expectedMonthlyRevenue",
+            "profitPotential",
+            "marketingStrategy",
+            "firstCustomerStrategy",
+            "toolsNeeded",
+            "ninetyDayPlan",
+            "whyItCanWork",
+            "firstSteps",
+            "risks",
+            "nextAction"
+          ]
+        }
+      }
+    }
   });
 
 const elapsedTime =
