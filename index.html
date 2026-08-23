@@ -1011,7 +1011,14 @@
     </div>
 
 </div>
-
+<button
+  id="saveProjectButton"
+  type="button"
+  onclick="saveProject()"
+  style="width:100%; max-width:440px; height:58px; margin-top:20px; background:#2563eb;"
+>
+  💾 Save Project
+</button>
 </section>
 
 
@@ -1631,7 +1638,7 @@ async function buildBusiness() {
     renderAnalysis(
       data.analysis
     );
-
+window.lastVexalunoAnalysis = data.analysis;
 
     analysis.style.display =
       "block";
@@ -1962,7 +1969,42 @@ function escapeHtml(
     );
 
 }
+function saveProject() {
 
+  const analysis = window.lastVexalunoAnalysis;
+
+  if (!analysis) {
+    alert("Please build the business first.");
+    return;
+  }
+
+  const projects =
+    JSON.parse(
+      localStorage.getItem("vexalunoProjects") || "[]"
+    );
+
+  projects.push({
+    id: Date.now(),
+    idea: currentIdea,
+    budget: currentBudget,
+    selectedBusiness: selectedBusiness,
+    analysis: analysis,
+    savedAt: new Date().toISOString()
+  });
+
+  localStorage.setItem(
+    "vexalunoProjects",
+    JSON.stringify(projects)
+  );
+
+  alert("Project saved successfully.");
+}
+
+function getSavedProjects() {
+  return JSON.parse(
+    localStorage.getItem("vexalunoProjects") || "[]"
+  );
+}
 </script>
 
 </body>
