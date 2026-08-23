@@ -1118,7 +1118,36 @@ function loadVexalunoSavedProjects() {
     `)
     .join("");
 }
+function deleteVexalunoSavedProject(index) {
+  let projects = [];
 
+  try {
+    projects = JSON.parse(
+      localStorage.getItem("vexalunoProjects") || "[]"
+    );
+  } catch (error) {
+    alert("Unable to delete saved project.");
+    return;
+  }
+
+  if (!projects[index]) {
+    alert("Project not found.");
+    return;
+  }
+
+  if (!confirm("Delete this saved project?")) {
+    return;
+  }
+
+  projects.splice(index, 1);
+
+  localStorage.setItem(
+    "vexalunoProjects",
+    JSON.stringify(projects)
+  );
+
+  loadVexalunoSavedProjects();
+}
 function openVexalunoSavedProject(index) {
   let projects = [];
 
