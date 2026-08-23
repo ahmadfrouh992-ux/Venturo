@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       ok: true,
       success: true,
-      service: "Venturo AI Business Builder",
+      service: "Vexaluno AI Business Builder",
       status: "running"
     });
   }
@@ -83,9 +83,9 @@ export default async function handler(req, res) {
         selectedBusiness || idea;
 
       const prompt = `
-You are Venturo, a professional global AI business builder.
+You are Vexaluno, a professional global AI business builder.
 
-The user has searched for a business idea and selected a specific business opportunity.
+The user searched for a business idea and selected a specific business opportunity.
 
 ORIGINAL USER IDEA:
 ${idea}
@@ -96,11 +96,11 @@ ${businessToBuild}
 AVAILABLE BUDGET:
 ${budget}
 
-Your job is to create a practical and realistic business blueprint
+Create a practical, realistic and detailed business blueprint
 specifically for the SELECTED BUSINESS.
 
-Do not give a generic analysis of the original idea.
-Focus on the selected business.
+Do not give a generic analysis.
+Focus on how the user could realistically start this business.
 
 Return ONLY valid JSON using exactly this structure:
 
@@ -114,6 +114,14 @@ Return ONLY valid JSON using exactly this structure:
   "competition": "competition assessment",
   "growthPotential": "growth assessment",
   "bestBusinessModel": "best business model",
+  "recommendedPricing": "recommended prices or pricing structure",
+  "expectedMonthlyRevenue": "realistic potential monthly revenue range after gaining customers",
+  "profitPotential": "realistic profit potential and main costs",
+  "marketingStrategy": "practical strategy for getting customers",
+  "firstCustomerStrategy": "specific strategy for getting the first customer",
+  "toolsNeeded": "tools and platforms needed to start",
+  "ninetyDayPlan": "practical plan for the first 90 days",
+  "whyItCanWork": "short explanation of why this business could work",
   "firstSteps": [
     "Step 1",
     "Step 2",
@@ -137,12 +145,19 @@ RULES:
 - score must be a number from 1 to 10.
 - Give exactly 7 first steps.
 - Give exactly 4 risks.
-- Keep the plan realistic for the available budget.
+- Keep everything realistic for the available budget.
 - Do not recommend spending far beyond the user's budget.
 - Do not promise guaranteed profits.
 - Do not invent statistics.
-- Make the recommendations practical.
-- Consider the user's likely starting position.
+- Revenue figures must be presented as realistic estimates or ranges, not guarantees.
+- Consider competition and customer acquisition difficulty.
+- Make the plan practical for a beginner.
+- Prefer low-cost tools when the budget is low.
+- Give specific pricing examples when appropriate.
+- Explain the main costs when discussing profit.
+- Make the marketing strategy actionable.
+- Make the first customer strategy specific.
+- Make the 90-day plan practical.
 - Use clear English.
 `;
 
@@ -203,7 +218,7 @@ RULES:
     // =====================================================
 
     const prompt = `
-You are Venturo, a professional global AI business builder.
+You are Vexaluno, a professional global AI business builder.
 
 The user wants to find realistic businesses.
 
@@ -315,7 +330,7 @@ RULES:
   } catch (error) {
 
     console.error(
-      "Venturo AI error:",
+      "Vexaluno AI error:",
       error
     );
 
@@ -324,7 +339,7 @@ RULES:
       success: false,
       error:
         error?.message ||
-        "Venturo AI service error."
+        "Vexaluno AI service error."
     });
   }
 }
