@@ -94,13 +94,13 @@ res.setHeader(
 
     if (action === "build") {
 
-      const businessToBuild =
-        selectedBusiness || idea;
+  const businessToBuild =
+    selectedBusiness || idea;
 
-      const prompt = `
+  const prompt = `
 You are Vexaluno, a professional global AI business builder.
 
-The user searched for a business idea and selected a specific business opportunity.
+Create a practical business blueprint for the selected business.
 
 ORIGINAL USER IDEA:
 ${idea}
@@ -111,197 +111,231 @@ ${businessToBuild}
 AVAILABLE BUDGET:
 ${budget}
 
-Create a practical, realistic and detailed business blueprint
-specifically for the SELECTED BUSINESS.
+Requirements:
 
-Do not give a generic analysis.
-Focus on how the user could realistically start this business.
-
-Return ONLY valid JSON using exactly this structure:
-
-{
-  "businessName": "name of the selected business",
-  "summary": "short practical business summary",
-  "score": 8,
-  "targetCustomer": "ideal target customers",
-  "startupCost": "realistic estimated startup cost",
-  "revenueModel": "how the business makes money",
-  "competition": "competition assessment",
-  "growthPotential": "growth assessment",
-  "bestBusinessModel": "best business model",
-  "recommendedPricing": "recommended prices or pricing structure",
-  "expectedMonthlyRevenue": "realistic potential monthly revenue range after gaining customers",
-  "profitPotential": "realistic profit potential and main costs",
-  "marketingStrategy": "practical strategy for getting customers",
-  "firstCustomerStrategy": "specific strategy for getting the first customer",
-  "toolsNeeded": "tools and platforms needed to start",
-  "ninetyDayPlan": "practical plan for the first 90 days",
-  "whyItCanWork": "short explanation of why this business could work",
-  "firstSteps": [
-    "Step 1",
-    "Step 2",
-    "Step 3",
-    "Step 4",
-    "Step 5",
-    "Step 6",
-    "Step 7"
-  ],
-  "risks": [
-    "Risk 1",
-    "Risk 2",
-    "Risk 3",
-    "Risk 4"
-  ],
-  "nextAction": "the single most important action the user should take next"
-}
-
-RULES:
-
-- score must be a number from 1 to 10.
-- Give exactly 7 first steps.
-- Give exactly 4 risks.
-- Keep everything realistic for the available budget.
-- Do not recommend spending far beyond the user's budget.
+- Focus specifically on the selected business.
+- Make the plan realistic for the available budget.
+- Assume the user is a beginner.
 - Do not promise guaranteed profits.
-- Do not invent statistics.
-- Revenue figures must be presented as realistic estimates or ranges, not guarantees.
-- Consider competition and customer acquisition difficulty.
-- Make the plan practical for a beginner.
-- Prefer low-cost tools when the budget is low.
-- Give specific pricing examples when appropriate.
-- Explain the main costs when discussing profit.
+- Use realistic revenue ranges only.
+- Consider competition and customer acquisition.
+- Prefer low-cost tools.
+- Give practical pricing examples.
 - Make the marketing strategy actionable.
-- Make the first customer strategy specific.
+- Make the first-customer strategy specific.
 - Make the 90-day plan practical.
-- Use clear English.
+- Score from 1 to 10.
+- Exactly 7 first steps.
+- Exactly 4 risks.
+- Keep all text concise and useful.
+- Return data matching the provided JSON schema exactly.
 `;
 
-      const startTime = Date.now();
+  const startTime = Date.now();
 
-const response =
-  await client.responses.create({
-    model: "gpt-5.6-luna",
-    input: prompt,
-    max_output_tokens: 2400,
-    text: {
-      format: {
-        type: "json_schema",
-        name: "business_blueprint",
-        strict: true,
-        schema: {
-          type: "object",
-          additionalProperties: false,
-          properties: {
-            businessName: { type: "string" },
-            summary: { type: "string" },
-            score: { type: "number" },
-            targetCustomer: { type: "string" },
-            startupCost: { type: "string" },
-            revenueModel: { type: "string" },
-            competition: { type: "string" },
-            growthPotential: { type: "string" },
-            bestBusinessModel: { type: "string" },
-            recommendedPricing: { type: "string" },
-            expectedMonthlyRevenue: { type: "string" },
-            profitPotential: { type: "string" },
-            marketingStrategy: { type: "string" },
-            firstCustomerStrategy: { type: "string" },
-            toolsNeeded: { type: "string" },
-            ninetyDayPlan: { type: "string" },
-            whyItCanWork: { type: "string" },
-            firstSteps: {
-              type: "array",
-              items: { type: "string" },
-              minItems: 7,
-              maxItems: 7
+  const response =
+    await client.responses.create({
+      model: "gpt-5.6-luna",
+      input: prompt,
+      max_output_tokens: 2400,
+      text: {
+        format: {
+          type: "json_schema",
+          name: "business_blueprint",
+          strict: true,
+          schema: {
+            type: "object",
+            additionalProperties: false,
+
+            properties: {
+
+              businessName: {
+                type: "string"
+              },
+
+              summary: {
+                type: "string"
+              },
+
+              score: {
+                type: "number"
+              },
+
+              targetCustomer: {
+                type: "string"
+              },
+
+              startupCost: {
+                type: "string"
+              },
+
+              revenueModel: {
+                type: "string"
+              },
+
+              competition: {
+                type: "string"
+              },
+
+              growthPotential: {
+                type: "string"
+              },
+
+              bestBusinessModel: {
+                type: "string"
+              },
+
+              recommendedPricing: {
+                type: "string"
+              },
+
+              expectedMonthlyRevenue: {
+                type: "string"
+              },
+
+              profitPotential: {
+                type: "string"
+              },
+
+              marketingStrategy: {
+                type: "string"
+              },
+
+              firstCustomerStrategy: {
+                type: "string"
+              },
+
+              toolsNeeded: {
+                type: "string"
+              },
+
+              ninetyDayPlan: {
+                type: "string"
+              },
+
+              whyItCanWork: {
+                type: "string"
+              },
+
+              firstSteps: {
+                type: "array",
+                items: {
+                  type: "string"
+                },
+                minItems: 7,
+                maxItems: 7
+              },
+
+              risks: {
+                type: "array",
+                items: {
+                  type: "string"
+                },
+                minItems: 4,
+                maxItems: 4
+              },
+
+              nextAction: {
+                type: "string"
+              }
+
             },
-            risks: {
-              type: "array",
-              items: { type: "string" },
-              minItems: 4,
-              maxItems: 4
-            },
-            nextAction: { type: "string" }
-          },
-          required: [
-            "businessName",
-            "summary",
-            "score",
-            "targetCustomer",
-            "startupCost",
-            "revenueModel",
-            "competition",
-            "growthPotential",
-            "bestBusinessModel",
-            "recommendedPricing",
-            "expectedMonthlyRevenue",
-            "profitPotential",
-            "marketingStrategy",
-            "firstCustomerStrategy",
-            "toolsNeeded",
-            "ninetyDayPlan",
-            "whyItCanWork",
-            "firstSteps",
-            "risks",
-            "nextAction"
-          ]
+
+            required: [
+              "businessName",
+              "summary",
+              "score",
+              "targetCustomer",
+              "startupCost",
+              "revenueModel",
+              "competition",
+              "growthPotential",
+              "bestBusinessModel",
+              "recommendedPricing",
+              "expectedMonthlyRevenue",
+              "profitPotential",
+              "marketingStrategy",
+              "firstCustomerStrategy",
+              "toolsNeeded",
+              "ninetyDayPlan",
+              "whyItCanWork",
+              "firstSteps",
+              "risks",
+              "nextAction"
+            ]
+          }
         }
       }
-    }
+    });
+
+  const elapsedTime =
+    Date.now() - startTime;
+
+  console.log(
+    `OpenAI BUILD response time: ${elapsedTime} ms`
+  );
+
+  const text =
+    response.output_text || "";
+
+  if (!text) {
+
+    console.error(
+      "Empty BUILD response:",
+      response
+    );
+
+    return res.status(500).json({
+      ok: false,
+      success: false,
+      error: "Empty AI business blueprint response."
+    });
+
+  }
+
+  let analysis;
+
+  try {
+
+    analysis =
+      JSON.parse(text);
+
+  } catch (error) {
+
+    console.error(
+      "Build JSON error:",
+      text
+    );
+
+    return res.status(500).json({
+      ok: false,
+      success: false,
+      error:
+        "AI returned invalid business analysis."
+    });
+
+  }
+
+  return res.status(200).json({
+
+    ok: true,
+
+    success: true,
+
+    action: "build",
+
+    idea,
+
+    selectedBusiness:
+      businessToBuild,
+
+    budget,
+
+    analysis
+
   });
 
-const elapsedTime =
-  Date.now() - startTime;
-
-console.log(
-  `OpenAI response time: ${elapsedTime} ms`
-);
-
-      const text =
-        response.output_text || "";
-
-      if (!text) {
-        return res.status(500).json({
-          ok: false,
-          success: false,
-          error: "Empty AI response."
-        });
-      }
-
-      let analysis;
-
-      try {
-
-        analysis =
-          JSON.parse(text);
-
-      } catch (error) {
-
-        console.error(
-          "Build JSON error:",
-          text
-        );
-
-        return res.status(500).json({
-          ok: false,
-          success: false,
-          error:
-            "AI returned invalid business analysis."
-        });
-
-      }
-
-      return res.status(200).json({
-        ok: true,
-        success: true,
-        action: "build",
-        idea,
-        selectedBusiness:
-          businessToBuild,
-        budget,
-        analysis
-      });
-    }
+}
 
     // =====================================================
     // FIND IDEAS
