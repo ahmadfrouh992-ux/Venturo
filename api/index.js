@@ -178,7 +178,7 @@ RULES:
 
       const response =
         await client.responses.create({
-          model: "gpt-5-mini",
+          model: "gpt-5.6-luna",
           input: prompt
         });
 
