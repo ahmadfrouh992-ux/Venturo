@@ -1221,12 +1221,36 @@ async function buildBusiness() {
 
   button.disabled = true;
 
-  button.textContent =
-    "Building your business...";
+const buildMessages = [
+  "Analysing your business idea...",
+  "Checking customers and competition...",
+  "Creating your business model...",
+  "Preparing your launch plan..."
+];
 
+let messageIndex = 0;
 
-  message.textContent =
-    "Vexaluno is creating your business blueprint...";
+button.textContent =
+  buildMessages[messageIndex];
+
+message.textContent =
+  buildMessages[messageIndex];
+
+const messageTimer = setInterval(() => {
+
+  messageIndex++;
+
+  if (messageIndex < buildMessages.length) {
+
+    button.textContent =
+      buildMessages[messageIndex];
+
+    message.textContent =
+      buildMessages[messageIndex];
+
+  }
+
+}, 5000);
 
 
   analysis.style.display =
@@ -1313,7 +1337,7 @@ async function buildBusiness() {
       "Vexaluno could not build the business plan yet.";
 
   } finally {
-
+    clearInterval(messageTimer);
     button.disabled = false;
 
     button.textContent =
