@@ -423,10 +423,20 @@ Create exactly 8 practical business opportunities.
 Every opportunity must:
 
 - be related specifically to the user's idea
-- respect the available budget
-- be realistic
+- strictly respect the available budget
+- be realistic for a beginner
 - be different from the other opportunities
 - avoid guaranteed profit claims
+
+BUDGET RULES:
+
+- If the available budget is a specific amount, every recommendation must be realistically launchable within that budget.
+- Do not recommend startup costs above the user's available budget.
+- If the budget is £100, recommendations must be launchable with approximately £100 or less.
+- If the budget is £500, recommendations must be launchable with approximately £500 or less.
+- If the budget is £1,000, recommendations must be launchable with approximately £1,000 or less.
+- Always use GBP (£) when describing budgets or startup costs.
+- If the available budget is "Any budget", choose sensible and realistic startup costs rather than automatically suggesting expensive businesses.
 
 Difficulty must be:
 Easy, Medium, or Hard.
