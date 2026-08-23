@@ -3,456 +3,563 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Vexaluno — Global AI Business Builder</title>
 
- <style>
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  font-family: Inter, Arial, Helvetica, sans-serif;
-  background: #f5f7fb;
-  color: #111827;
-}
-
-header {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  background: #071126;
-  color: white;
-  padding: 18px 6%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-}
-
-.logo {
-  font-size: 25px;
-  font-weight: 850;
-  letter-spacing: -0.5px;
-}
-
-.logo span {
-  color: #4f8cff;
-}
-
-nav {
-  display: flex;
-  gap: 24px;
-  font-size: 15px;
-  font-weight: 600;
-}
-
-nav a {
-  color: #dbe4f5;
-  text-decoration: none;
-}
-
-nav a:hover {
-  color: white;
-}
-
-.hero {
-  background:
-    radial-gradient(
-      circle at 80% 20%,
-      #263b80 0,
-      #182653 35%,
-      #0e1838 100%
-    );
-  color: white;
-  padding: 88px 6% 125px;
-}
-
-.hero-inner {
-  max-width: 1100px;
-  margin: auto;
-}
-
-.eyebrow {
-  color: #8db9ff;
-  font-weight: 800;
-  letter-spacing: 3px;
-  font-size: 13px;
-  margin-bottom: 22px;
-}
-
-h1 {
-  font-size: clamp(48px, 7vw, 76px);
-  line-height: .98;
-  letter-spacing: -2px;
-  margin: 0 0 28px;
-  max-width: 850px;
-}
-
-.subtitle {
-  color: #cbd5e1;
-  font-size: 20px;
-  line-height: 1.7;
-  max-width: 760px;
-}
-
-.builder {
-  max-width: 1040px;
-  margin: -65px auto 0;
-  position: relative;
-  padding: 28px;
-  background: white;
-  border-radius: 24px;
-  box-shadow: 0 18px 55px rgba(7,17,38,.18);
-  border: 1px solid #e5e7eb;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 180px 150px;
-  gap: 12px;
-}
-
-input,
-select,
-button {
-  height: 58px;
-  border-radius: 12px;
-  font-size: 16px;
-}
-
-input,
-select {
-  border: 1px solid #d1d5db;
-  padding: 0 16px;
-  background: white;
-  width: 100%;
-  outline: none;
-}
-
-input:focus,
-select:focus {
-  border-color: #4f7ff0;
-  box-shadow: 0 0 0 3px rgba(37,99,235,.10);
-}
-
-button {
-  border: none;
-  background: #2563eb;
-  color: white;
-  font-weight: 800;
-  cursor: pointer;
-  transition: .2s;
-}
-
-button:hover {
-  background: #1d4ed8;
-  transform: translateY(-1px);
-}
-
-button:disabled {
-  opacity: .6;
-  cursor: wait;
-  transform: none;
-}
-
-.message {
-  margin-top: 15px;
-  color: #64748b;
-  min-height: 22px;
-  font-size: 14px;
-}
-
-.section {
-  max-width: 1100px;
-  margin: 70px auto;
-  padding: 0 20px;
-}
-
-.section h2 {
-  font-size: 36px;
-  letter-spacing: -1px;
-  margin-bottom: 10px;
-}
-
-.section-intro {
-  color: #64748b;
-  margin-bottom: 30px;
-}
-
-#results {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-}
-
-.card {
-  background: white;
-  border-radius: 20px;
-  padding: 25px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 5px 20px rgba(0,0,0,.045);
-  cursor: pointer;
-  transition: .2s;
-}
-
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(0,0,0,.08);
-}
-
-.card.selected {
-  border: 2px solid #2563eb;
-  box-shadow: 0 12px 30px rgba(37,99,235,.14);
-}
-
-.card h3 {
-  margin: 0 0 10px;
-  font-size: 22px;
-}
-
-.card p {
-  color: #64748b;
-  line-height: 1.6;
-  margin: 0;
-}
-
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 18px;
-}
-
-.tag {
-  background: #eef2ff;
-  color: #3730a3;
-  padding: 7px 10px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.select-project {
-  margin-top: 20px;
-  width: 100%;
-  height: 48px;
-  background: #111827;
-}
-
-.select-project:hover {
-  background: #1f2937;
-}
-
-.card.selected .select-project {
-  background: #2563eb;
-}
-
-.build-section {
-  display: none;
-  margin-top: 35px;
-  text-align: center;
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 20px;
-  padding: 25px;
-}
-
-.selected-label {
-  color: #2563eb;
-  font-weight: 800;
-  margin-bottom: 15px;
-}
-
-.build-button {
-  width: 100%;
-  max-width: 440px;
-  height: 62px;
-  font-size: 18px;
-  background: #111827;
-}
-
-.build-button:hover {
-  background: #1f2937;
-}
-
-.analysis {
-  display: none;
-  margin-top: 45px;
-  background: white;
-  border-radius: 24px;
-  padding: 30px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 10px 35px rgba(0,0,0,.07);
-}
-
-.analysis h2 {
-  margin: 0;
-  font-size: 34px;
-}
-
-.analysis-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 18px;
-  margin-top: 25px;
-}
-
-.analysis-box {
-  background: #f8fafc;
-  border-radius: 16px;
-  padding: 20px;
-}
-
-.analysis-box strong {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 13px;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: .6px;
-}
-
-.analysis-box div {
-  font-size: 17px;
-  line-height: 1.55;
-}
-
-.score {
-  font-size: 48px !important;
-  font-weight: 850;
-  color: #2563eb;
-}
-
-.steps,
-.risks {
-  margin-top: 28px;
-}
-
-.steps ol,
-.risks ul {
-  padding-left: 25px;
-  line-height: 1.8;
-}
-
-.next-action {
-  margin-top: 30px;
-  padding: 22px;
-  background: #eef2ff;
-  border-radius: 16px;
-}
-
-.next-action strong {
-  display: block;
-  margin-bottom: 8px;
-}
-
-.empty {
-  color: #64748b;
-  font-size: 18px;
-  padding: 25px;
-  background: white;
-  border: 1px dashed #cbd5e1;
-  border-radius: 16px;
-}
-
-.info-section {
-  max-width: 900px;
-  margin: 80px auto;
-  padding: 0 20px;
-  line-height: 1.7;
-}
-
-.info-section h2 {
-  font-size: 32px;
-  margin-bottom: 20px;
-}
-
-.info-section p {
-  color: #475569;
-  font-size: 17px;
-}
-
-footer {
-  background: #071126;
-  color: #94a3b8;
-  text-align: center;
-  padding: 38px 20px;
-  margin-top: 100px;
-}
-
-.footer-links {
-  margin-top: 15px;
-}
-
-.footer-links a {
-  color: #cbd5e1;
-  margin: 0 10px;
-  text-decoration: none;
-}
-
-.footer-links a:hover {
-  color: white;
-}
-
-@media (max-width: 750px) {
-
-  header {
-    padding: 18px 20px;
-  }
-
-  .hero {
-    padding: 65px 20px 105px;
-  }
-
-  h1 {
-    font-size: 50px;
-    letter-spacing: -1.5px;
-  }
-
-  .subtitle {
-    font-size: 18px;
-  }
-
-  .builder {
-    margin: -55px 16px 0;
-    padding: 18px;
-  }
-
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-
-  #results {
-    grid-template-columns: 1fr;
-  }
-
-  .analysis-grid {
-    grid-template-columns: 1fr;
-  }
-
-  nav {
-    gap: 13px;
-  }
-
-  .card {
-    padding: 20px;
-  }
-
-  .analysis {
-    padding: 22px;
-  }
-
-  .section {
-    margin: 55px auto;
-  }
-}
-</style>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      background: #f5f7fb;
+      color: #111827;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: #071126;
+      color: white;
+      padding: 18px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: 850;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span {
+      color: #4f8cff;
+    }
+
+    nav {
+      display: flex;
+      gap: 24px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    nav a {
+      color: #dbe4f5;
+      text-decoration: none;
+    }
+
+    nav a:hover {
+      color: white;
+    }
+
+    .hero {
+      background:
+        radial-gradient(
+          circle at 80% 20%,
+          #263b80 0,
+          #182653 35%,
+          #0e1838 100%
+        );
+      color: white;
+      padding: 88px 6% 125px;
+    }
+
+    .hero-inner {
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .eyebrow {
+      color: #8db9ff;
+      font-weight: 800;
+      letter-spacing: 3px;
+      font-size: 13px;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      font-size: clamp(48px, 7vw, 76px);
+      line-height: .98;
+      letter-spacing: -2px;
+      margin: 0 0 28px;
+      max-width: 850px;
+    }
+
+    .subtitle {
+      color: #cbd5e1;
+      font-size: 20px;
+      line-height: 1.7;
+      max-width: 760px;
+    }
+
+    .builder {
+      max-width: 1040px;
+      margin: -65px auto 0;
+      position: relative;
+      padding: 28px;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 18px 55px rgba(7,17,38,.18);
+      border: 1px solid #e5e7eb;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 180px 150px;
+      gap: 12px;
+    }
+
+    input,
+    select,
+    button {
+      height: 58px;
+      border-radius: 12px;
+      font-size: 16px;
+    }
+
+    input,
+    select {
+      border: 1px solid #d1d5db;
+      padding: 0 16px;
+      background: white;
+      width: 100%;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #4f7ff0;
+      box-shadow: 0 0 0 3px rgba(37,99,235,.10);
+    }
+
+    button {
+      border: none;
+      background: #2563eb;
+      color: white;
+      font-weight: 800;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: wait;
+      transform: none;
+    }
+
+    .message {
+      margin-top: 15px;
+      color: #64748b;
+      min-height: 22px;
+      font-size: 14px;
+    }
+
+    .section {
+      max-width: 1100px;
+      margin: 70px auto;
+      padding: 0 20px;
+    }
+
+    .section h2 {
+      font-size: 36px;
+      letter-spacing: -1px;
+      margin-bottom: 10px;
+    }
+
+    #results {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 5px 20px rgba(0,0,0,.045);
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0,0,0,.08);
+    }
+
+    .card.selected {
+      border: 2px solid #2563eb;
+      box-shadow: 0 12px 30px rgba(37,99,235,.14);
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 22px;
+    }
+
+    .card p {
+      color: #64748b;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .tag {
+      background: #eef2ff;
+      color: #3730a3;
+      padding: 7px 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .select-project {
+      margin-top: 20px;
+      width: 100%;
+      height: 48px;
+      background: #111827;
+    }
+
+    .select-project:hover {
+      background: #1f2937;
+    }
+
+    .card.selected .select-project {
+      background: #2563eb;
+    }
+
+    .build-section {
+      display: none;
+      margin-top: 35px;
+      text-align: center;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 20px;
+      padding: 25px;
+    }
+
+    .selected-label {
+      color: #2563eb;
+      font-weight: 800;
+      margin-bottom: 15px;
+    }
+
+    .build-button {
+      width: 100%;
+      max-width: 440px;
+      height: 62px;
+      font-size: 18px;
+      background: #111827;
+    }
+
+    .build-button:hover {
+      background: #1f2937;
+    }
+
+    /* BUSINESS BLUEPRINT */
+
+    .analysis {
+      display: none;
+      margin-top: 45px;
+      background: white;
+      border-radius: 28px;
+      padding: 30px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 10px 35px rgba(0,0,0,.07);
+    }
+
+    .blueprint-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: flex-start;
+      margin-bottom: 25px;
+    }
+
+    .blueprint-kicker {
+      color: #2563eb;
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .blueprint-title {
+      margin: 0;
+      font-size: 36px;
+      letter-spacing: -1.2px;
+    }
+
+    .blueprint-summary {
+      color: #64748b;
+      line-height: 1.65;
+      margin: 10px 0 0;
+      max-width: 760px;
+    }
+
+    .score-card {
+      min-width: 150px;
+      background: #071126;
+      color: white;
+      border-radius: 20px;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .score-card small {
+      display: block;
+      color: #9fb7e8;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .score-number {
+      font-size: 42px;
+      font-weight: 900;
+      line-height: 1.1;
+      margin-top: 6px;
+    }
+
+    .section-label {
+      font-size: 22px;
+      margin: 30px 0 14px;
+    }
+
+    .score-grid,
+    .money-grid,
+    .business-grid,
+    .execution-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .mini-card {
+      background: #f8fafc;
+      border: 1px solid #e8edf5;
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .mini-card strong {
+      display: block;
+      color: #64748b;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .7px;
+      margin-bottom: 8px;
+    }
+
+    .mini-card div {
+      font-size: 16px;
+      line-height: 1.55;
+    }
+
+    .metric {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .metric strong {
+      margin: 0;
+    }
+
+    .metric-value {
+      font-weight: 900;
+      color: #2563eb;
+      font-size: 18px;
+    }
+
+    .wide {
+      grid-column: 1 / -1;
+    }
+
+    .highlight {
+      background: #eef2ff;
+      border-color: #dbe4ff;
+    }
+
+    .steps,
+    .risks {
+      margin-top: 28px;
+    }
+
+    .steps ol,
+    .risks ul {
+      padding-left: 25px;
+      line-height: 1.75;
+    }
+
+    .steps li,
+    .risks li {
+      margin-bottom: 9px;
+    }
+
+    .next-action {
+      margin-top: 30px;
+      padding: 22px;
+      background: #071126;
+      color: white;
+      border-radius: 18px;
+    }
+
+    .next-action strong {
+      display: block;
+      color: #9fb7e8;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .next-action div {
+      font-size: 18px;
+      line-height: 1.55;
+    }
+
+    .empty {
+      color: #64748b;
+      font-size: 18px;
+      padding: 25px;
+      background: white;
+      border: 1px dashed #cbd5e1;
+      border-radius: 16px;
+    }
+
+    .info-section {
+      max-width: 900px;
+      margin: 80px auto;
+      padding: 0 20px;
+      line-height: 1.7;
+    }
+
+    .info-section h2 {
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+
+    .info-section p {
+      color: #475569;
+      font-size: 17px;
+    }
+
+    footer {
+      background: #071126;
+      color: #94a3b8;
+      text-align: center;
+      padding: 38px 20px;
+      margin-top: 100px;
+    }
+
+    .footer-links {
+      margin-top: 15px;
+    }
+
+    .footer-links a {
+      color: #cbd5e1;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+
+    .footer-links a:hover {
+      color: white;
+    }
+
+    @media (max-width: 750px) {
+
+      header {
+        padding: 18px 20px;
+      }
+
+      .hero {
+        padding: 65px 20px 105px;
+      }
+
+      h1 {
+        font-size: 50px;
+        letter-spacing: -1.5px;
+      }
+
+      .subtitle {
+        font-size: 18px;
+      }
+
+      .builder {
+        margin: -55px 16px 0;
+        padding: 18px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      #results {
+        grid-template-columns: 1fr;
+      }
+
+      .score-grid,
+      .money-grid,
+      .business-grid,
+      .execution-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .wide {
+        grid-column: auto;
+      }
+
+      .blueprint-header {
+        flex-direction: column;
+      }
+
+      .score-card {
+        width: 100%;
+      }
+
+      .blueprint-title {
+        font-size: 30px;
+      }
+
+      nav {
+        gap: 13px;
+      }
+
+      .card {
+        padding: 20px;
+      }
+
+      .analysis {
+        padding: 22px;
+      }
+
+      .section {
+        margin: 55px auto;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -469,7 +576,6 @@ footer {
   </nav>
 
 </header>
-
 
 <section class="hero">
 
@@ -492,7 +598,6 @@ footer {
   </div>
 
 </section>
-
 
 <section class="builder" id="builder">
 
@@ -544,11 +649,7 @@ footer {
 
 </section>
 
-
-<section
-  class="section"
-  id="ideas"
->
+<section class="section" id="ideas">
 
   <h2>
     Business opportunities
@@ -561,7 +662,6 @@ footer {
     </div>
 
   </div>
-
 
   <div
     id="buildSection"
@@ -583,36 +683,107 @@ footer {
 
   </div>
 
-
   <div
     id="analysis"
     class="analysis"
   >
 
-    <h2>
-      Your Business Blueprint
-    </h2>
+    <div class="blueprint-header">
 
+      <div>
 
-    <div class="analysis-grid">
+        <div class="blueprint-kicker">
+          Business Blueprint
+        </div>
 
-      <div class="analysis-box">
+        <h2
+          id="blueprintBusinessName"
+          class="blueprint-title"
+        >
+          Your Business Blueprint
+        </h2>
 
-        <strong>
-          Idea Score
-        </strong>
+        <p
+          id="blueprintSummary"
+          class="blueprint-summary"
+        >
+          —
+        </p>
+
+      </div>
+
+      <div class="score-card">
+
+        <small>
+          Overall Score
+        </small>
 
         <div
           id="score"
-          class="score"
+          class="score-number"
         >
           —
         </div>
 
       </div>
 
+    </div>
 
-      <div class="analysis-box">
+    <h3 class="section-label">
+      Business Score
+    </h3>
+
+    <div class="score-grid">
+
+      <div class="mini-card metric">
+        <strong>Market Demand</strong>
+        <span
+          id="marketDemand"
+          class="metric-value"
+        >—</span>
+      </div>
+
+      <div class="mini-card metric">
+        <strong>Profit Potential</strong>
+        <span
+          id="profitPotential"
+          class="metric-value"
+        >—</span>
+      </div>
+
+      <div class="mini-card metric">
+        <strong>Competition</strong>
+        <span
+          id="competitionScore"
+          class="metric-value"
+        >—</span>
+      </div>
+
+      <div class="mini-card metric">
+        <strong>Ease of Launch</strong>
+        <span
+          id="easeOfLaunch"
+          class="metric-value"
+        >—</span>
+      </div>
+
+      <div class="mini-card metric">
+        <strong>Scalability</strong>
+        <span
+          id="scalability"
+          class="metric-value"
+        >—</span>
+      </div>
+
+    </div>
+
+    <h3 class="section-label">
+      The Business
+    </h3>
+
+    <div class="business-grid">
+
+      <div class="mini-card">
 
         <strong>
           Target Customers
@@ -624,60 +795,43 @@ footer {
 
       </div>
 
-
-      <div class="analysis-box">
+      <div class="mini-card">
 
         <strong>
-          Startup Cost
+          Problem
         </strong>
 
-        <div id="startupCost">
+        <div id="problem">
           —
         </div>
 
       </div>
 
-
-      <div class="analysis-box">
+      <div class="mini-card wide">
 
         <strong>
-          Revenue Model
+          Solution
         </strong>
 
-        <div id="revenueModel">
+        <div id="solution">
           —
         </div>
 
       </div>
 
-
-      <div class="analysis-box">
+      <div class="mini-card">
 
         <strong>
-          Competition
+          Why It Can Work
         </strong>
 
-        <div id="competition">
+        <div id="whyItCanWork">
           —
         </div>
 
       </div>
 
-
-      <div class="analysis-box">
-
-        <strong>
-          Growth Potential
-        </strong>
-
-        <div id="growthPotential">
-          —
-        </div>
-
-      </div>
-
-
-      <div class="analysis-box">
+      <div class="mini-card">
 
         <strong>
           Best Business Model
@@ -689,14 +843,57 @@ footer {
 
       </div>
 
+    </div>
 
-      <div class="analysis-box">
+    <h3 class="section-label">
+      Money
+    </h3>
+
+    <div class="money-grid">
+
+      <div class="mini-card">
 
         <strong>
-          Summary
+          Startup Cost
         </strong>
 
-        <div id="summary">
+        <div id="startupCost">
+          —
+        </div>
+
+      </div>
+
+      <div class="mini-card">
+
+        <strong>
+          Revenue Model
+        </strong>
+
+        <div id="revenueModel">
+          —
+        </div>
+
+      </div>
+
+      <div class="mini-card highlight">
+
+        <strong>
+          Pricing
+        </strong>
+
+        <div id="recommendedPricing">
+          —
+        </div>
+
+      </div>
+
+      <div class="mini-card highlight">
+
+        <strong>
+          Example Monthly Revenue
+        </strong>
+
+        <div id="expectedMonthlyRevenue">
           —
         </div>
 
@@ -704,6 +901,81 @@ footer {
 
     </div>
 
+    <h3 class="section-label">
+      First Customer
+    </h3>
+
+    <div class="mini-card wide">
+
+      <strong>
+        Who to target and how to win the first customer
+      </strong>
+
+      <div id="firstCustomerStrategy">
+        —
+      </div>
+
+    </div>
+
+    <h3 class="section-label">
+      Competition
+    </h3>
+
+    <div class="mini-card wide">
+
+      <strong>
+        How to compete
+      </strong>
+
+      <div id="competition">
+        —
+      </div>
+
+    </div>
+
+    <h3 class="section-label">
+      Marketing
+    </h3>
+
+    <div class="execution-grid">
+
+      <div class="mini-card wide">
+
+        <strong>
+          Marketing Strategy
+        </strong>
+
+        <div id="marketingStrategy">
+          —
+        </div>
+
+      </div>
+
+      <div class="mini-card wide">
+
+        <strong>
+          Tools Needed
+        </strong>
+
+        <div id="toolsNeeded">
+          —
+        </div>
+
+      </div>
+
+    </div>
+
+    <h3 class="section-label">
+      90-Day Plan
+    </h3>
+
+    <div class="mini-card wide">
+
+      <div id="ninetyDayPlan">
+        —
+      </div>
+
+    </div>
 
     <div class="steps">
 
@@ -715,22 +987,20 @@ footer {
 
     </div>
 
-
     <div class="risks">
 
       <h3>
-        Key Risks
+        4 Key Risks
       </h3>
 
       <ul id="risks"></ul>
 
     </div>
 
-
     <div class="next-action">
 
       <strong>
-        Recommended Next Action
+        Do This Next
       </strong>
 
       <div id="nextAction">
@@ -742,7 +1012,6 @@ footer {
   </div>
 
 </section>
-
 
 <section
   id="about"
@@ -766,7 +1035,6 @@ footer {
 
 </section>
 
-
 <section
   id="contact"
   class="info-section"
@@ -783,11 +1051,12 @@ footer {
 
   <p>
     Email:
-    <strong>contact@vexaluno.ai</strong>
+    <strong>
+      contact@vexaluno.ai
+    </strong>
   </p>
 
 </section>
-
 
 <section
   id="privacy"
@@ -827,11 +1096,12 @@ footer {
   <p>
     If you have questions about privacy or how information
     is handled, please contact us at
-    <strong>contact@vexaluno.ai</strong>.
+    <strong>
+      contact@vexaluno.ai
+    </strong>.
   </p>
 
 </section>
-
 
 <footer>
 
@@ -857,19 +1127,11 @@ footer {
 
 </footer>
 
-
 <script>
 
 let currentIdea = "";
 let currentBudget = "";
 let selectedBusiness = "";
-
-
-/*
-========================================================
-KEEP PAGE AT TOP WHEN OPENING / RELOADING
-========================================================
-*/
 
 if ("scrollRestoration" in history) {
   history.scrollRestoration = "manual";
@@ -889,12 +1151,6 @@ window.addEventListener("load", function () {
 
 });
 
-
-/*
-========================================================
-FIND BUSINESS IDEAS
-========================================================
-*/
 
 async function findIdeas() {
 
@@ -1094,12 +1350,6 @@ async function findIdeas() {
 }
 
 
-/*
-========================================================
-SELECT BUSINESS
-========================================================
-*/
-
 function selectBusiness(index) {
 
   const recommendations =
@@ -1181,12 +1431,6 @@ function selectBusiness(index) {
 }
 
 
-/*
-========================================================
-BUILD BUSINESS
-========================================================
-*/
-
 async function buildBusiness() {
 
   const button =
@@ -1221,36 +1465,50 @@ async function buildBusiness() {
 
   button.disabled = true;
 
-const buildMessages = [
-  "Analysing your business idea...",
-  "Checking customers and competition...",
-  "Creating your business model...",
-  "Preparing your launch plan..."
-];
 
-let messageIndex = 0;
+  const buildMessages = [
 
-button.textContent =
-  buildMessages[messageIndex];
+    "Analysing your business idea...",
 
-message.textContent =
-  buildMessages[messageIndex];
+    "Checking customers and competition...",
 
-const messageTimer = setInterval(() => {
+    "Creating your business model...",
 
-  messageIndex++;
+    "Preparing your launch plan..."
 
-  if (messageIndex < buildMessages.length) {
+  ];
 
-    button.textContent =
-      buildMessages[messageIndex];
 
-    message.textContent =
-      buildMessages[messageIndex];
+  let messageIndex = 0;
 
-  }
 
-}, 5000);
+  button.textContent =
+    buildMessages[messageIndex];
+
+  message.textContent =
+    buildMessages[messageIndex];
+
+
+  const messageTimer =
+    setInterval(function () {
+
+      messageIndex++;
+
+
+      if (
+        messageIndex <
+        buildMessages.length
+      ) {
+
+        button.textContent =
+          buildMessages[messageIndex];
+
+        message.textContent =
+          buildMessages[messageIndex];
+
+      }
+
+    }, 5000);
 
 
   analysis.style.display =
@@ -1274,6 +1532,9 @@ const messageTimer = setInterval(() => {
 
           idea:
             `${currentIdea}. Selected business: ${selectedBusiness}`,
+
+          selectedBusiness:
+            selectedBusiness,
 
           budget:
             currentBudget
@@ -1337,7 +1598,11 @@ const messageTimer = setInterval(() => {
       "Vexaluno could not build the business plan yet.";
 
   } finally {
-    clearInterval(messageTimer);
+
+    clearInterval(
+      messageTimer
+    );
+
     button.disabled = false;
 
     button.textContent =
@@ -1348,62 +1613,175 @@ const messageTimer = setInterval(() => {
 }
 
 
-/*
-========================================================
-RENDER BUSINESS BLUEPRINT
-========================================================
-*/
+function setText(
+  id,
+  value
+) {
+
+  const element =
+    document.getElementById(id);
+
+  if (element) {
+
+    element.textContent =
+      value || "—";
+
+  }
+
+}
+
 
 function renderAnalysis(data) {
 
-  document.getElementById(
-    "score"
-  ).textContent =
-    data.score
+  setText(
+    "blueprintBusinessName",
+    data.businessName ||
+    "Your Business Blueprint"
+  );
+
+
+  setText(
+    "blueprintSummary",
+    data.summary
+  );
+
+
+  setText(
+    "score",
+    data.score != null
       ? `${data.score}/10`
-      : "—";
+      : "—"
+  );
 
 
-  document.getElementById(
-    "targetCustomer"
-  ).textContent =
-    data.targetCustomer || "—";
+  setText(
+    "marketDemand",
+    formatScore(
+      data.marketDemand
+    )
+  );
 
 
-  document.getElementById(
-    "startupCost"
-  ).textContent =
-    data.startupCost || "—";
+  setText(
+    "profitPotential",
+    formatScore(
+      data.profitPotential
+    )
+  );
 
 
-  document.getElementById(
-    "revenueModel"
-  ).textContent =
-    data.revenueModel || "—";
+  setText(
+    "competitionScore",
+    formatScore(
+      data.competitionScore
+    )
+  );
 
 
-  document.getElementById(
-    "competition"
-  ).textContent =
-    data.competition || "—";
+  setText(
+    "easeOfLaunch",
+    formatScore(
+      data.easeOfLaunch
+    )
+  );
 
 
-  document.getElementById(
-    "growthPotential"
-  ).textContent =
-    data.growthPotential || "—";
+  setText(
+    "scalability",
+    formatScore(
+      data.scalability
+    )
+  );
 
 
-  document.getElementById(
-    "bestModel"
-  ).textContent =
-    data.bestBusinessModel || "—";
+  setText(
+    "targetCustomer",
+    data.targetCustomer
+  );
 
 
-  document.getElementById(
-    "summary"
-  ).textContent =
-    data.summary || "—";
+  setText(
+    "problem",
+    data.problem
+  );
+
+
+  setText(
+    "solution",
+    data.solution
+  );
+
+
+  setText(
+    "whyItCanWork",
+    data.whyItCanWork
+  );
+
+
+  setText(
+    "bestModel",
+    data.bestBusinessModel
+  );
+
+
+  setText(
+    "startupCost",
+    data.startupCost
+  );
+
+
+  setText(
+    "revenueModel",
+    data.revenueModel
+  );
+
+
+  setText(
+    "recommendedPricing",
+    data.recommendedPricing
+  );
+
+
+  setText(
+    "expectedMonthlyRevenue",
+    data.expectedMonthlyRevenue
+  );
+
+
+  setText(
+    "firstCustomerStrategy",
+    data.firstCustomerStrategy
+  );
+
+
+  setText(
+    "competition",
+    data.competition
+  );
+
+
+  setText(
+    "marketingStrategy",
+    data.marketingStrategy
+  );
+
+
+  setText(
+    "toolsNeeded",
+    data.toolsNeeded
+  );
+
+
+  setText(
+    "ninetyDayPlan",
+    data.ninetyDayPlan
+  );
+
+
+  setText(
+    "nextAction",
+    data.nextAction
+  );
 
 
   const steps =
@@ -1415,10 +1793,14 @@ function renderAnalysis(data) {
   steps.innerHTML = "";
 
 
-  if (Array.isArray(data.firstSteps)) {
+  if (
+    Array.isArray(
+      data.firstSteps
+    )
+  ) {
 
     data.firstSteps.forEach(
-      step => {
+      function (step) {
 
         const li =
           document.createElement(
@@ -1447,10 +1829,14 @@ function renderAnalysis(data) {
   risks.innerHTML = "";
 
 
-  if (Array.isArray(data.risks)) {
+  if (
+    Array.isArray(
+      data.risks
+    )
+  ) {
 
     data.risks.forEach(
-      risk => {
+      function (risk) {
 
         const li =
           document.createElement(
@@ -1469,22 +1855,23 @@ function renderAnalysis(data) {
 
   }
 
+}
 
-  document.getElementById(
-    "nextAction"
-  ).textContent =
-    data.nextAction || "—";
+
+function formatScore(
+  value
+) {
+
+  return value == null
+    ? "—"
+    : `${value}/10`;
 
 }
 
 
-/*
-========================================================
-HTML SECURITY
-========================================================
-*/
-
-function escapeHtml(value) {
+function escapeHtml(
+  value
+) {
 
   return String(value)
 
