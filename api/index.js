@@ -285,11 +285,20 @@ RULES:
 - Use clear English.
 `;
 
-    const response =
-      await client.responses.create({
-        model: "gpt-5-mini",
-        input: prompt
-      });
+    const startTime = Date.now();
+
+const response =
+  await client.responses.create({
+    model: "gpt-5-mini",
+    input: prompt
+  });
+
+const elapsedTime =
+  Date.now() - startTime;
+
+console.log(
+  `OpenAI FIND IDEAS response time: ${elapsedTime} ms`
+);
 
     const text =
       response.output_text || "";
