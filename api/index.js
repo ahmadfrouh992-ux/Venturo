@@ -181,7 +181,8 @@ RULES:
 const response =
   await client.responses.create({
     model: "gpt-5.6-luna",
-    input: prompt
+    input: prompt,
+    max_output_tokens: 1800
   });
 
 const elapsedTime =
@@ -289,8 +290,9 @@ RULES:
 
 const response =
   await client.responses.create({
-    model: "gpt-5-mini",
-    input: prompt
+    model: "gpt-5.6-luna",
+    input: prompt,
+    max_output_tokens: 900
   });
 
 const elapsedTime =
