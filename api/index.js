@@ -182,7 +182,7 @@ const response =
   await client.responses.create({
     model: "gpt-5.6-luna",
     input: prompt,
-    max_output_tokens: 1800,
+    max_output_tokens: 2400,
     text: {
       format: {
         type: "json_schema",
