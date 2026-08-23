@@ -419,7 +419,7 @@
 <header>
 
   <div class="logo">
-    Venturo<span>.</span>
+    Vexaluno<span>.</span>
   </div>
 
   <nav>
@@ -443,7 +443,7 @@
     </h1>
 
     <div class="subtitle">
-      Venturo helps entrepreneurs discover practical business
+      Vexaluno helps entrepreneurs discover practical business
       opportunities, compare options, and turn a simple idea
       into an actionable starting plan.
     </div>
@@ -709,17 +709,17 @@
 >
 
   <h2>
-    About Venturo
+    About Vexaluno
   </h2>
 
   <p>
-    Venturo is a global AI business builder designed to help
+    Vexaluno is a global AI business builder designed to help
     entrepreneurs discover practical business opportunities
     based on their ideas and available budget.
   </p>
 
   <p>
-    Venturo can compare business opportunities and create
+    Vexaluno can compare business opportunities and create
     practical starting blueprints for selected ideas.
   </p>
 
@@ -737,7 +737,7 @@
 
   <p>
     For questions, feedback or business enquiries,
-    please contact the Venturo team.
+    please contact the Vexaluno team.
   </p>
 
   <p>
@@ -758,7 +758,7 @@
   </h2>
 
   <p>
-    Venturo processes information submitted by users to
+    Vexaluno processes information submitted by users to
     provide business recommendations and AI-generated
     business plans.
   </p>
@@ -771,7 +771,7 @@
   </p>
 
   <p>
-    Venturo may use third-party AI services to process
+    Vexaluno may use third-party AI services to process
     submitted business requests and generate recommendations.
   </p>
 
@@ -781,7 +781,7 @@
 <footer>
 
   <div>
-    © 2026 Venturo — Global AI Business Builder
+    © 2026 Vexaluno — Global AI Business Builder
   </div>
 
   <div class="footer-links">
@@ -1006,19 +1006,19 @@ async function findIdeas() {
         .join("");
 
 
-    window.venturoRecommendations =
+    window.vexalunoRecommendations =
       data.recommendations;
 
   } catch (error) {
 
     console.error(
-      "Venturo API error:",
+      "Vexaluno API error:",
       error
     );
 
 
     message.textContent =
-      "Venturo could not reach the recommendation service. Please try again.";
+      "Vexaluno could not reach the recommendation service. Please try again.";
 
 
     results.innerHTML = `
@@ -1048,7 +1048,7 @@ SELECT BUSINESS
 function selectBusiness(index) {
 
   const recommendations =
-    window.venturoRecommendations || [];
+    window.vexalunoRecommendations || [];
 
   const item =
     recommendations[index];
@@ -1171,7 +1171,7 @@ async function buildBusiness() {
 
 
   message.textContent =
-    "Venturo is creating your business blueprint...";
+    "Vexaluno is creating your business blueprint...";
 
 
   analysis.style.display =
@@ -1249,13 +1249,13 @@ async function buildBusiness() {
   } catch (error) {
 
     console.error(
-      "Venturo Builder error:",
+      "Vexaluno Builder error:",
       error
     );
 
 
     message.textContent =
-      "Venturo could not build the business plan yet.";
+      "Vexaluno could not build the business plan yet.";
 
   } finally {
 
