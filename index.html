@@ -2601,9 +2601,14 @@ document
 // BUSINESS LAUNCH CHECKLIST — PROGRESS
 // =====================================================
 
-document.addEventListener("DOMContentLoaded", function () {
+// =====================================================
+// BUSINESS LAUNCH CHECKLIST — PROGRESS
+// =====================================================
 
-  const checks = document.querySelectorAll(".launch-check");
+function updateLaunchProgress() {
+
+  const checks =
+    document.querySelectorAll(".launch-check");
 
   const progressBar =
     document.getElementById("launchProgressBar");
@@ -2611,33 +2616,48 @@ document.addEventListener("DOMContentLoaded", function () {
   const progressText =
     document.getElementById("launchProgressText");
 
-  function updateLaunchProgress() {
+  const total = checks.length;
 
-    const total = checks.length;
+  const completed =
+    document.querySelectorAll(
+      ".launch-check:checked"
+    ).length;
 
-    const completed =
-      document.querySelectorAll(
-        ".launch-check:checked"
-      ).length;
+  const percentage =
+    total === 0
+      ? 0
+      : Math.round((completed / total) * 100);
 
-    const percentage =
-      total === 0
-        ? 0
-        : Math.round((completed / total) * 100);
-
-    if (progressBar) {
-      progressBar.style.width =
-        percentage + "%";
-    }
-
-    if (progressText) {
-      progressText.textContent =
-        completed +
-        " of " +
-        total +
-        " completed";
-    }
+  if (progressBar) {
+    progressBar.style.width =
+      percentage + "%";
   }
+
+  if (progressText) {
+    progressText.textContent =
+      completed +
+      " of " +
+      total +
+      " completed";
+  }
+}
+
+function resetLaunchChecklist() {
+
+  const checks =
+    document.querySelectorAll(".launch-check");
+
+  checks.forEach(function (check) {
+    check.checked = false;
+  });
+
+  updateLaunchProgress();
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const checks =
+    document.querySelectorAll(".launch-check");
 
   checks.forEach(function (check) {
 
@@ -2648,7 +2668,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
   });
 
-  updateLaunchProgress();
+  resetLaunchChecklist();
+
+});
+
+window.addEventListener("pageshow", function (event) {
+
+  if (event.persisted) {
+    resetLaunchChecklist();
+  }
 
 });
 </script>
