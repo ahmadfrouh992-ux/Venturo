@@ -2454,10 +2454,52 @@ function saveProject() {
   alert("Project saved successfully.");
 }
 
-function getSavedProjects() {
+function saveProject() {
+  let projects = [];
+
+  try {
+    projects = JSON.parse(
+      localStorage.getItem("vexalunoProjects") || "[]"
+    );
+  } catch (error) {
+    projects = [];
+  }
+
+  const savedLaunchChecklist = Array.from(
+    document.querySelectorAll(".launch-check")
+  ).map(function (check) {
+    return check.checked === true;
+  });
+
+  const project = {
+    idea: currentIdea || selectedBusiness || "Saved Project",
+    budget: currentBudget || "Not specified",
+    selectedBusiness: selectedBusiness || null,
+    analysis: window.lastVexalunoAnalysis || analysis || null,
+
+    launchChecklist: savedLaunchChecklist,
+
+    savedAt: new Date().toISOString()
+  };
+
+  projects.push(project);
+
+  localStorage.setItem(
+    "vexalunoProjects",
+    JSON.stringify(projects)
+  );
+
+  if (typeof loadVexalunoSavedProjects === "function") {
+    loadVexalunoSavedProjects();
+  }
+
+  alert("Project saved successfully.");
+}
+  function getSavedProjects() {
   return JSON.parse(
     localStorage.getItem("vexalunoProjects") || "[]"
   );
+}
 }// =====================================================
 // START THIS BUSINESS — EXECUTION PLAN
 // =====================================================
