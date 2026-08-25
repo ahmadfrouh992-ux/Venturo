@@ -2494,68 +2494,8 @@ function saveProject() {
   }
 
   alert("Project saved successfully.");
-}
-  function saveProject() {
-  let projects = [];
 
-  try {
-    projects = JSON.parse(
-      localStorage.getItem("vexalunoProjects") || "[]"
-    );
-  } catch (error) {
-    projects = [];
-  }
-
-  const savedLaunchChecklist = Array.from(
-    document.querySelectorAll(".launch-check")
-  ).map(function (check) {
-    return check.checked === true;
-  });
-
-  const project = {
-    idea:
-      currentIdea ||
-      selectedBusiness ||
-      document.getElementById("ideaInput")?.value ||
-      "Saved Project",
-
-    budget:
-      currentBudget ||
-      document.getElementById("budgetInput")?.value ||
-      "Not specified",
-
-    selectedBusiness:
-      selectedBusiness || null,
-
-    analysis:
-      window.lastVexalunoAnalysis ||
-      analysis ||
-      null,
-
-    launchChecklist:
-      savedLaunchChecklist,
-
-    savedAt:
-      new Date().toISOString()
-  };
-
-  projects.push(project);
-
-  localStorage.setItem(
-    "vexalunoProjects",
-    JSON.stringify(projects)
-  );
-
-  if (typeof loadVexalunoSavedProjects === "function") {
-    loadVexalunoSavedProjects();
-  }
-
-  alert(
-    "Project saved successfully.\n\n" +
-    project.idea
-  );
-}
-}// =====================================================
+  }// =====================================================
 // START THIS BUSINESS — EXECUTION PLAN
 // =====================================================
 
