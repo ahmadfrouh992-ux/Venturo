@@ -280,7 +280,7 @@ All scores must be numbers from 1 to 10.
 `;
       const response =
         await client.responses.create({
-          model: "gpt-5.6-luna",
+          model: "gpt-5.4-mini",
 
           input: prompt,
 
