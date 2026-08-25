@@ -576,7 +576,7 @@ Return exactly 8 recommendations.
 
         input: prompt,
 
-        max_output_tokens: 1200,
+        max_output_tokens: 900,
 
         text: {
 
