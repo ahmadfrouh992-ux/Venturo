@@ -1091,7 +1091,57 @@
       </div>
 
     </div>
+<div class="start-business">
 
+  <button
+    id="startBusinessBtn"
+    type="button"
+  >
+    Start This Business
+  </button>
+
+</div>
+
+<div
+  id="businessExecution"
+  class="business-execution"
+  style="display:none;"
+>
+
+  <h3 class="section-label">
+    Your Execution Plan
+  </h3>
+
+  <div class="execution-grid">
+
+    <div class="mini-card">
+      <strong>Today</strong>
+      <div id="executionToday">—</div>
+    </div>
+
+    <div class="mini-card">
+      <strong>This Week</strong>
+      <div id="executionWeek">—</div>
+    </div>
+
+    <div class="mini-card wide">
+      <strong>First Customer</strong>
+      <div id="executionCustomer">—</div>
+    </div>
+
+    <div class="mini-card highlight">
+      <strong>First £100</strong>
+      <div id="executionFirst100">—</div>
+    </div>
+
+    <div class="mini-card highlight">
+      <strong>30-Day Target</strong>
+      <div id="execution30Days">—</div>
+    </div>
+
+  </div>
+
+</div>
 </div>
 <button
   id="saveProjectButton"
@@ -2269,7 +2319,92 @@ function getSavedProjects() {
   return JSON.parse(
     localStorage.getItem("vexalunoProjects") || "[]"
   );
-}
+}// =====================================================
+// START THIS BUSINESS — EXECUTION PLAN
+// =====================================================
+
+document
+  .getElementById("startBusinessBtn")
+  ?.addEventListener("click", function () {
+
+    const executionBox =
+      document.getElementById("businessExecution");
+
+    if (!executionBox) return;
+
+    // Show execution section
+    executionBox.style.display = "block";
+
+    // Get current business data
+    const businessName =
+      document.getElementById("businessName")?.textContent?.trim() ||
+      window.selectedBusiness ||
+      "Your Business";
+
+    const targetCustomer =
+      document.getElementById("targetCustomer")?.textContent?.trim() ||
+      "your ideal customer";
+
+    const firstCustomer =
+      document.getElementById("firstCustomerStrategy")?.textContent?.trim() ||
+      "Find your first suitable customer and make a simple introductory offer.";
+
+    const nextAction =
+      document.getElementById("nextAction")?.textContent?.trim() ||
+      "Contact your first potential customer today.";
+
+    // TODAY
+    const today =
+      document.getElementById("executionToday");
+
+    if (today) {
+      today.textContent =
+        "Define your service, choose your local area, prepare your price list, and contact your first 5 potential customers.";
+    }
+
+    // THIS WEEK
+    const week =
+      document.getElementById("executionWeek");
+
+    if (week) {
+      week.textContent =
+        "Complete your first test jobs, collect feedback, create before-and-after examples, and contact at least 20 potential customers.";
+    }
+
+    // FIRST CUSTOMER
+    const customer =
+      document.getElementById("executionCustomer");
+
+    if (customer) {
+      customer.textContent =
+        firstCustomer;
+    }
+
+    // FIRST £100
+    const first100 =
+      document.getElementById("executionFirst100");
+
+    if (first100) {
+      first100.textContent =
+        "Aim to generate your first £100 in real customer revenue. Focus on 2–3 small paid jobs rather than buying more equipment.";
+    }
+
+    // 30-DAY TARGET
+    const target30 =
+      document.getElementById("execution30Days");
+
+    if (target30) {
+      target30.textContent =
+        "Complete your first 5–10 paid jobs, collect customer reviews, measure your real costs, and improve the offer before expanding.";
+    }
+
+    // Scroll smoothly to execution plan
+    executionBox.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+  });
 </script>
 
 </body>
