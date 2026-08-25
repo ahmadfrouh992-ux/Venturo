@@ -284,7 +284,7 @@ All scores must be numbers from 1 to 10.
 
           input: prompt,
 
-          max_output_tokens: 1600,
+          max_output_tokens: 3000,
 
           text: {
             format: {
