@@ -444,7 +444,46 @@
       background: #eef2ff;
       border-color: #dbe4ff;
     }
+.money-grid .mini-card {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 20px;
+  transition: transform .2s, box-shadow .2s, border-color .2s;
+}
 
+.money-grid .mini-card:hover {
+  transform: translateY(-2px);
+  border-color: #bfdbfe;
+  box-shadow: 0 10px 25px rgba(37,99,235,.09);
+}
+
+.money-grid .mini-card strong {
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.money-grid .mini-card > div {
+  margin-top: 10px;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.money-grid .highlight {
+  background: linear-gradient(
+    135deg,
+    #eef2ff 0%,
+    #f8faff 100%
+  );
+  border: 1px solid #c7d2fe;
+}
+
+.money-grid .highlight > div {
+  font-size: 19px;
+  font-weight: 800;
+  color: #1d4ed8;
+}
     .steps,
     .risks {
       margin-top: 28px;
