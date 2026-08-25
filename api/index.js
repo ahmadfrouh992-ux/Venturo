@@ -572,7 +572,7 @@ Return exactly 8 recommendations.
     const response =
       await client.responses.create({
 
-        model: "gpt-5.6-luna",
+        model: "gpt-5.4-mini",
 
         input: prompt,
 
