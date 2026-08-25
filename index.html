@@ -2454,7 +2454,74 @@ function saveProject() {
   alert("Project saved successfully.");
 }
 
+function saveProject() {
+  let projects = [];
 
+  try {
+    projects = JSON.parse(
+      localStorage.getItem("vexalunoProjects") || "[]"
+    );
+  } catch (error) {
+    projects = [];
+  }
+
+  const savedLaunchChecklist = Array.from(
+    document.querySelectorAll(".launch-check")
+  ).map(function (check) {
+    return check.checked === true;
+  });
+
+  const project = {
+    id: Date.now(),
+
+    idea: currentIdea || "Saved Project",
+
+    budget: currentBudget || "Not specified",
+
+    selectedBusiness: selectedBusiness || null,
+
+    analysis: window.lastVexalunoAnalysis || null,
+
+    launchChecklist: savedLaunchChecklist,
+
+    execution: {
+      today:
+        document.getElementById("executionToday")?.textContent || "",
+
+      week:
+        document.getElementById("executionWeek")?.textContent || "",
+
+      customer:
+        document.getElementById("executionCustomer")?.textContent || "",
+
+      first100:
+        document.getElementById("executionFirst100")?.textContent || "",
+
+      target30:
+        document.getElementById("execution30Days")?.textContent || ""
+    },
+
+    savedAt: new Date().toISOString()
+  };
+
+  projects.push(project);
+
+  localStorage.setItem(
+    "vexalunoProjects",
+    JSON.stringify(projects)
+  );
+
+  if (
+    typeof loadVexalunoSavedProjects === "function"
+  ) {
+    loadVexalunoSavedProjects();
+  }
+
+  alert(
+    "Project saved successfully.\n\n" +
+    project.idea
+  );
+}
 
 // =====================================================
 // START THIS BUSINESS — EXECUTION PLAN
