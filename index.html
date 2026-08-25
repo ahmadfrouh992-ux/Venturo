@@ -2320,7 +2320,7 @@ function getSavedProjects() {
     localStorage.getItem("vexalunoProjects") || "[]"
   );
 }// =====================================================
-// START THIS BUSINESS — EXECUTION PLAN
+// START THIS BUSINESS — DYNAMIC EXECUTION PLAN
 // =====================================================
 
 document
@@ -2332,46 +2332,82 @@ document
 
     if (!executionBox) return;
 
-    // Show execution section
     executionBox.style.display = "block";
 
-    // Get current business data
+    // Read the current business blueprint
+    const getText = (id, fallback = "") => {
+      const el = document.getElementById(id);
+      return el?.textContent?.trim() || fallback;
+    };
+
     const businessName =
-      document.getElementById("businessName")?.textContent?.trim() ||
-      window.selectedBusiness ||
-      "Your Business";
+      getText("businessName", "Your Business");
 
     const targetCustomer =
-      document.getElementById("targetCustomer")?.textContent?.trim() ||
-      "your ideal customer";
+      getText(
+        "targetCustomer",
+        "your ideal customer"
+      );
+
+    const solution =
+      getText(
+        "solution",
+        "your business solution"
+      );
 
     const firstCustomer =
-      document.getElementById("firstCustomerStrategy")?.textContent?.trim() ||
-      "Find your first suitable customer and make a simple introductory offer.";
+      getText(
+        "firstCustomerStrategy",
+        "Find your first suitable customer."
+      );
+
+    const pricing =
+      getText(
+        "recommendedPricing",
+        "Set a simple introductory price."
+      );
 
     const nextAction =
-      document.getElementById("nextAction")?.textContent?.trim() ||
-      "Contact your first potential customer today.";
+      getText(
+        "nextAction",
+        "Contact your first potential customer."
+      );
 
+
+    // -------------------------------------------------
     // TODAY
+    // -------------------------------------------------
+
     const today =
       document.getElementById("executionToday");
 
     if (today) {
       today.textContent =
-        "Define your service, choose your local area, prepare your price list, and contact your first 5 potential customers.";
+        `Define your offer for ${targetCustomer}. ` +
+        `Set a simple starting price, prepare your basic sales message, ` +
+        `and contact your first 5 potential customers.`;
     }
 
+
+    // -------------------------------------------------
     // THIS WEEK
+    // -------------------------------------------------
+
     const week =
       document.getElementById("executionWeek");
 
     if (week) {
       week.textContent =
-        "Complete your first test jobs, collect feedback, create before-and-after examples, and contact at least 20 potential customers.";
+        `Validate ${businessName} with real people. ` +
+        `Contact at least 20 potential customers, test your offer, ` +
+        `collect feedback, and improve the service before spending more money.`;
     }
 
+
+    // -------------------------------------------------
     // FIRST CUSTOMER
+    // -------------------------------------------------
+
     const customer =
       document.getElementById("executionCustomer");
 
@@ -2380,25 +2416,59 @@ document
         firstCustomer;
     }
 
+
+    // -------------------------------------------------
     // FIRST £100
+    // -------------------------------------------------
+
     const first100 =
       document.getElementById("executionFirst100");
 
     if (first100) {
       first100.textContent =
-        "Aim to generate your first £100 in real customer revenue. Focus on 2–3 small paid jobs rather than buying more equipment.";
+        `Generate your first £100 from real customers. ` +
+        `Use your introductory offer (${pricing}) and focus on completing ` +
+        `the smallest number of profitable sales needed to reach £100.`;
     }
 
+
+    // -------------------------------------------------
     // 30-DAY TARGET
+    // -------------------------------------------------
+
     const target30 =
       document.getElementById("execution30Days");
 
     if (target30) {
       target30.textContent =
-        "Complete your first 5–10 paid jobs, collect customer reviews, measure your real costs, and improve the offer before expanding.";
+        `Complete your first 5–10 paid customer transactions for ` +
+        `${businessName}. Track revenue, costs, customer feedback, ` +
+        `repeat interest and the time required to deliver ${solution}. ` +
+        `Improve the offer before expanding.`;
     }
 
-    // Scroll smoothly to execution plan
+
+    // -------------------------------------------------
+    // SHOW THE NEXT ACTION
+    // -------------------------------------------------
+
+    if (nextAction) {
+
+      const todayBox =
+        document.getElementById("executionToday");
+
+      if (todayBox) {
+        todayBox.textContent =
+          nextAction;
+      }
+
+    }
+
+
+    // -------------------------------------------------
+    // SCROLL TO EXECUTION PLAN
+    // -------------------------------------------------
+
     executionBox.scrollIntoView({
       behavior: "smooth",
       block: "start"
