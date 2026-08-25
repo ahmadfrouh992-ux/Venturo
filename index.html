@@ -2320,7 +2320,7 @@ function getSavedProjects() {
     localStorage.getItem("vexalunoProjects") || "[]"
   );
 }// =====================================================
-// START THIS BUSINESS — DYNAMIC EXECUTION PLAN
+// START THIS BUSINESS — EXECUTION PLAN
 // =====================================================
 
 document
@@ -2334,80 +2334,33 @@ document
 
     executionBox.style.display = "block";
 
-    // Read the current business blueprint
-    const getText = (id, fallback = "") => {
-      const el = document.getElementById(id);
-      return el?.textContent?.trim() || fallback;
-    };
-
-    const businessName =
-      getText("businessName", "Your Business");
-
-    const targetCustomer =
-      getText(
-        "targetCustomer",
-        "your ideal customer"
-      );
-
-    const solution =
-      getText(
-        "solution",
-        "your business solution"
-      );
-
+    // Get current business data
     const firstCustomer =
-      getText(
-        "firstCustomerStrategy",
-        "Find your first suitable customer."
-      );
+      document
+        .getElementById("firstCustomerStrategy")
+        ?.textContent
+        ?.trim() ||
+      "Find your first suitable customer and make a simple introductory offer.";
 
-    const pricing =
-      getText(
-        "recommendedPricing",
-        "Set a simple introductory price."
-      );
-
-    const nextAction =
-      getText(
-        "nextAction",
-        "Contact your first potential customer."
-      );
-
-
-    // -------------------------------------------------
     // TODAY
-    // -------------------------------------------------
-
     const today =
       document.getElementById("executionToday");
 
     if (today) {
       today.textContent =
-        `Define your offer for ${targetCustomer}. ` +
-        `Set a simple starting price, prepare your basic sales message, ` +
-        `and contact your first 5 potential customers.`;
+        "Choose your local service area, prepare your price list, and contact your first 5 potential customers.";
     }
 
-
-    // -------------------------------------------------
     // THIS WEEK
-    // -------------------------------------------------
-
     const week =
       document.getElementById("executionWeek");
 
     if (week) {
       week.textContent =
-        `Validate ${businessName} with real people. ` +
-        `Contact at least 20 potential customers, test your offer, ` +
-        `collect feedback, and improve the service before spending more money.`;
+        "Contact at least 20 potential customers, test your offer, collect feedback, and try to secure your first paid job.";
     }
 
-
-    // -------------------------------------------------
     // FIRST CUSTOMER
-    // -------------------------------------------------
-
     const customer =
       document.getElementById("executionCustomer");
 
@@ -2416,59 +2369,25 @@ document
         firstCustomer;
     }
 
-
-    // -------------------------------------------------
     // FIRST £100
-    // -------------------------------------------------
-
     const first100 =
       document.getElementById("executionFirst100");
 
     if (first100) {
       first100.textContent =
-        `Generate your first £100 from real customers. ` +
-        `Use your introductory offer (${pricing}) and focus on completing ` +
-        `the smallest number of profitable sales needed to reach £100.`;
+        "Complete the smallest number of profitable paid jobs needed to generate your first £100 in real customer revenue.";
     }
 
-
-    // -------------------------------------------------
     // 30-DAY TARGET
-    // -------------------------------------------------
-
     const target30 =
       document.getElementById("execution30Days");
 
     if (target30) {
       target30.textContent =
-        `Complete your first 5–10 paid customer transactions for ` +
-        `${businessName}. Track revenue, costs, customer feedback, ` +
-        `repeat interest and the time required to deliver ${solution}. ` +
-        `Improve the offer before expanding.`;
+        "Complete 5–10 paid jobs, collect customer reviews, measure your real costs and delivery time, improve your offer, and aim to secure at least one repeat customer.";
     }
 
-
-    // -------------------------------------------------
-    // SHOW THE NEXT ACTION
-    // -------------------------------------------------
-
-    if (nextAction) {
-
-      const todayBox =
-        document.getElementById("executionToday");
-
-      if (todayBox) {
-        todayBox.textContent =
-          nextAction;
-      }
-
-    }
-
-
-    // -------------------------------------------------
-    // SCROLL TO EXECUTION PLAN
-    // -------------------------------------------------
-
+    // Scroll to execution plan
     executionBox.scrollIntoView({
       behavior: "smooth",
       block: "start"
