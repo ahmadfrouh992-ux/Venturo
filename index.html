@@ -2478,7 +2478,60 @@ document
       block: "start"
     });
 
+  });// =====================================================
+// BUSINESS LAUNCH CHECKLIST — PROGRESS
+// =====================================================
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const checks = document.querySelectorAll(".launch-check");
+
+  const progressBar =
+    document.getElementById("launchProgressBar");
+
+  const progressText =
+    document.getElementById("launchProgressText");
+
+  function updateLaunchProgress() {
+
+    const total = checks.length;
+
+    const completed =
+      document.querySelectorAll(
+        ".launch-check:checked"
+      ).length;
+
+    const percentage =
+      total === 0
+        ? 0
+        : Math.round((completed / total) * 100);
+
+    if (progressBar) {
+      progressBar.style.width =
+        percentage + "%";
+    }
+
+    if (progressText) {
+      progressText.textContent =
+        completed +
+        " of " +
+        total +
+        " completed";
+    }
+  }
+
+  checks.forEach(function (check) {
+
+    check.addEventListener(
+      "change",
+      updateLaunchProgress
+    );
+
   });
+
+  updateLaunchProgress();
+
+});
 </script>
 
 </body>
