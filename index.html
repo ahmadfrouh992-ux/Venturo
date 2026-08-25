@@ -388,10 +388,53 @@
     }
 
     .metric-value {
-      font-weight: 900;
-      color: #2563eb;
-      font-size: 18px;
-    }
+  font-weight: 900;
+  color: #2563eb;
+  font-size: 22px;
+  min-width: 52px;
+  text-align: right;
+}
+
+.score-grid .mini-card.metric {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid #e2e8f0;
+  min-height: 82px;
+  transition: transform .2s, box-shadow .2s, border-color .2s;
+}
+
+.score-grid .mini-card.metric:hover {
+  transform: translateY(-2px);
+  border-color: #bfdbfe;
+  box-shadow: 0 10px 25px rgba(37,99,235,.10);
+}
+
+.score-grid .mini-card.metric::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: #2563eb;
+}
+
+.score-grid .mini-card.metric strong {
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.score-grid .metric-value::after {
+  content: "";
+  display: block;
+  height: 4px;
+  width: 44px;
+  margin-top: 5px;
+  margin-left: auto;
+  border-radius: 999px;
+  background: #dbeafe;
+}
 
     .wide {
       grid-column: 1 / -1;
