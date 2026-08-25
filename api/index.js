@@ -279,12 +279,16 @@ Use GBP (£) for money.
 All scores must be numbers from 1 to 10.
 `;
       const response =
-        await client.responses.create({
-          model: "gpt-5.4-mini",
+  await client.responses.create({
+    model: "gpt-5.4-mini",
 
-          input: prompt,
+    reasoning: {
+      effort: "low"
+    },
 
-          max_output_tokens: 3000,
+    input: prompt,
+
+    max_output_tokens: 3000,
 
           text: {
             format: {
