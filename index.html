@@ -1384,29 +1384,83 @@ function openVexalunoSavedProject(index) {
     return;
   }
 
-  window.lastVexalunoAnalysis = project.analysis || null;
+  window.lastVexalunoAnalysis =
+    project.analysis || null;
+
+  window.savedLaunchChecklist =
+    project.launchChecklist || [];
 
   alert(
     "Project opened successfully.\n\n" +
     (project.idea || "Saved Project")
   );
 
-  const analysis = document.getElementById("analysis");
+  const analysis =
+    document.getElementById("analysis");
 
   if (analysis && project.analysis) {
     try {
       renderAnalysis(project.analysis);
+
       analysis.style.display = "block";
+
       analysis.scrollIntoView({
         behavior: "smooth",
         block: "start"
       });
+
+      setTimeout(function () {
+
+        const checks =
+          document.querySelectorAll(".launch-check");
+
+        checks.forEach(function (check, i) {
+          check.checked =
+            window.savedLaunchChecklist[i] === true;
+        });
+
+        const progressBar =
+          document.getElementById("launchProgressBar");
+
+        const progressText =
+          document.getElementById("launchProgressText");
+
+        const completed =
+          document.querySelectorAll(
+            ".launch-check:checked"
+          ).length;
+
+        const total = checks.length;
+
+        const percentage =
+          total === 0
+            ? 0
+            : Math.round(
+                (completed / total) * 100
+              );
+
+        if (progressBar) {
+          progressBar.style.width =
+            percentage + "%";
+        }
+
+        if (progressText) {
+          progressText.textContent =
+            completed +
+            " of " +
+            total +
+            " completed";
+        }
+
+      }, 100);
+
     } catch (error) {
-      console.log("Analysis display could not be restored.");
+      console.log(
+        "Analysis display could not be restored."
+      );
     }
   }
 }
-
 function escapeVexalunoText(value) {
   return String(value)
     .replace(/&/g, "&amp;")
