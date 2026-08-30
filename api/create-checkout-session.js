@@ -16,11 +16,22 @@ export default async function handler(req, res) {
       });
     }
 
+    const body = req.body || {};
+    const plan = body.plan || "pro";
+
+    let priceId;
+
+    if (plan === "business") {
+      priceId = "price_1UA7ZgHg87qsiCn6MJOgHlgW";
+    } else {
+      priceId = "price_1UA7GJHg87qsiCn6mw1HHWNw";
+    }
+
     const params = new URLSearchParams();
 
     params.append(
       "line_items[0][price]",
-      "price_1UA7GJHg87qsiCn6mw1HHWNw"
+      priceId
     );
 
     params.append(
