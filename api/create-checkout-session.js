@@ -20,7 +20,7 @@ export default async function handler(req, res) {
 
     params.append(
       "line_items[0][price]",
-      "price_1U9xpEQdu5hbkbDzDQB1IRrW"
+      "price_1UA7GJHg87qsiCn6mw1HHWNw"
     );
 
     params.append(
