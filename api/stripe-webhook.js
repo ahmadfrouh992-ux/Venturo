@@ -1,5 +1,9 @@
 const Stripe = require("stripe");
-
+module.exports.config = {
+  api: {
+    bodyParser: false
+  }
+};
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 module.exports = async (req, res) => {
