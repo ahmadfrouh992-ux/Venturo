@@ -1541,12 +1541,12 @@ document.addEventListener(
       </p>
 
       <button
-        type="button"
-        style="width:100%; margin-top:20px;"
-        onclick="alert('Vexaluno Pro will be available soon.')"
-      >
-        Coming Soon
-      </button>
+  type="button"
+  style="width:100%; margin-top:20px;"
+  onclick="startProCheckout(this)"
+>
+  Upgrade to Pro
+</button>
 
     </div>
 
@@ -2701,8 +2701,49 @@ window.addEventListener("pageshow", function (event) {
   if (event.persisted) {
     resetLaunchChecklist();
   }
-
 });
+async function startProCheckout(button) {
+
+  button.disabled = true;
+  button.textContent = "Opening checkout...";
+
+  try {
+
+    const response = await fetch(
+      "/api/create-checkout-session.js",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.ok || !data.url) {
+      throw new Error(
+        data.error || "Unable to start checkout."
+      );
+    }
+
+    window.location.href = data.url;
+
+  } catch (error) {
+
+    console.error(
+      "VEXALUNO checkout error:",
+      error
+    );
+
+    alert(
+      "Unable to open checkout. Please try again."
+    );
+
+    button.disabled = false;
+    button.textContent = "Upgrade to Pro";
+  }
+}
 </script>
 
 </body>
