@@ -1,16 +1,34 @@
 const Stripe = require("stripe");
+
 module.exports.config = {
   api: {
-    bodyParser: false
-  }
+    bodyParser: false,
+  },
 };
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+function getRawBody(req) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+
+    req.on("data", (chunk) => {
+      chunks.push(Buffer.from(chunk));
+    });
+
+    req.on("end", () => {
+      resolve(Buffer.concat(chunks));
+    });
+
+    req.on("error", reject);
+  });
+}
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
     return res.status(405).json({
       ok: false,
-      error: "Method not allowed"
+      error: "Method not allowed",
     });
   }
 
@@ -19,15 +37,17 @@ module.exports = async (req, res) => {
   if (!signature) {
     return res.status(400).json({
       ok: false,
-      error: "Missing Stripe signature"
+      error: "Missing Stripe signature",
     });
   }
 
   let event;
 
   try {
+    const rawBody = await getRawBody(req);
+
     event = stripe.webhooks.constructEvent(
-      req.body,
+      rawBody,
       signature,
       process.env.STRIPE_WEBHOOK_SECRET
     );
@@ -39,17 +59,17 @@ module.exports = async (req, res) => {
 
     return res.status(400).json({
       ok: false,
-      error: "Invalid webhook signature"
+      error: "Invalid webhook signature",
     });
   }
 
   try {
-    const subscription = event.data.object;
-
     switch (event.type) {
       case "customer.subscription.created":
       case "customer.subscription.updated":
       case "customer.subscription.deleted": {
+        const subscription = event.data.object;
+
         const customerId = subscription.customer;
 
         const priceId =
@@ -76,7 +96,7 @@ module.exports = async (req, res) => {
           event: event.type,
           customerId,
           priceId,
-          plan
+          plan,
         });
 
         break;
@@ -91,7 +111,7 @@ module.exports = async (req, res) => {
 
     return res.status(200).json({
       ok: true,
-      received: true
+      received: true,
     });
 
   } catch (error) {
@@ -104,7 +124,7 @@ module.exports = async (req, res) => {
       ok: false,
       error:
         error.message ||
-        "Webhook processing error"
+        "Webhook processing error",
     });
   }
 };
